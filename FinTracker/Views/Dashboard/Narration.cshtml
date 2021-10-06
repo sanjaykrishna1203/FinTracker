@@ -1,0 +1,117 @@
+﻿@using Microsoft.AspNetCore.Http;
+@{
+    ViewData["Title"] = "AddNarration";
+}
+
+<div ng-app="narrationApp" ng-controller="narrationCtrl" >
+
+
+
+    <div id="superlarge-modal-size-preview" >
+        <div class="">
+            <div class="intro-y flex items-center mt-8">
+                <h2 class="text-lg font-bold mr-auto">
+                    Add Narration
+                </h2>
+            </div>
+
+            <form name="narrationform" class="form-control">
+
+                <div class="intro-y box mt-5">
+                    <div class="flex flex-col sm:flex-row items-center p-5">
+                        <label class="w-full sm:w-20 sm:text-right sm:mr-5">Narration</label>
+                        <input type="text" class="input w-full rounded-full border mt-2 flex-1" required ng-model="pageinputs.narration" name="narration" placeholder="Eg. Bank Loan">
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row items-center p-5">
+                        <label class="w-full sm:w-20 sm:text-right sm:mr-5 ">Total Amount</label>
+                        <input type="text" class="input w-full rounded-full border mt-2 flex-1" required ng-model="pageinputs.totalamount" name="totalamount" placeholder="₹">
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row items-center p-5">
+                        <label class="w-full sm:w-20 sm:text-right sm:mr-5">Loan Start Date &nbsp; &nbsp;</label>
+                        <input type="date" class=" input w-100 rounded-full border mt-2" required ng-model="pageinputs.loanstartdate" name="loanstartdate" data-single-mode="true">
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row items-center p-5">
+                        <label class="w-full sm:w-20 sm:text-right sm:mr-5">Loan End Date &nbsp; &nbsp;</label>
+                        <input type="date" class=" input w-100 rounded-full border mt-2" required ng-model="pageinputs.loanenddate" name="loanenddate" data-single-mode="true">
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row items-center p-5">
+                        <label class="w-full sm:w-20 sm:text-right sm:mr-5">Interest(%)</label>
+                        <input type="text" class="input w-full rounded-full border mt-2 flex-1" required ng-model="pageinputs.interest" name="emi" placeholder="%">
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row items-center p-5">
+                        <label class="w-full sm:w-20 sm:text-right sm:mr-5">EMI</label>
+                        <input type="text" class="input w-full rounded-full border mt-2 flex-1" required ng-model="pageinputs.emi" name="emi" placeholder="₹">
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row items-center p-5">
+                        <label class="w-full sm:w-20 sm:text-right sm:mr-5">Current Outstanding</label>
+                        <input type="text" class="input w-full rounded-full border mt-2 flex-1" required ng-model="pageinputs.currentoutstanding" name="emi" placeholder="₹">
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row items-center p-5">
+                        <button type="submit" class="button w-24 mr-1 mb-2 bg-theme-1 text-white" ng-click="FormValidator()">Save</button>
+                    </div>
+
+                </div>
+            </form>
+
+
+
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script>
+const { data } = require("jquery");
+
+
+
+
+        var app = angular.module('narrationApp', []);
+        app.controller('narrationCtrl', function ($scope, $http, $interval) {
+            $scope.pageinputs = {};
+            $scope.AddNarration = function () {
+                $http({
+                    cache: false,
+                    url: "/Dashboard/AddNarration",
+                    method: "POST",
+                    params: { data: JSON.stringify($scope.pageinputs) }
+                }).then(function (data, status, headers, config) {
+                    data = data.data;
+                    if (data = false) {
+                        swal("Error", "Unable to Process Your Request", "error");
+                        $scope.pageinputs = {};
+                    }
+                    else {
+                            
+                        swal("Success", "Added Successfully", "success");
+                        $scope.pageinputs = {};
+                    }
+                }, function errorCallback(response) {
+
+                });
+            }
+
+            $scope.FormValidator = function () {
+                if ($scope.narrationform.$valid) {
+                    $scope.AddNarration();
+                }
+                else {
+                    swal("Error", "Please Fill All the Required Fields", "warning");
+                }
+            }
+
+        
+
+            
+
+        });
+
+
+    </script>
+}

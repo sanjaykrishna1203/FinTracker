@@ -1,0 +1,91 @@
+﻿
+@{
+    ViewData["Title"] = "AddIncome";
+}
+
+<!-- BEGIN: Form Validation -->
+<div class="intro-y box" id="formbox" ng-app="IncomeApp" ng-controller="IncomeCtrl" >
+    <div class="flex flex-col sm:flex-row items-center p-5 border-b border-gray-200 dark:border-dark-5">
+        <h2 class="font-medium text-base mr-auto">
+           Add Your Income Here!
+        </h2>
+        <div class="w-full sm:w-auto flex items-center sm:ml-auto mt-3 sm:mt-0">
+        </div>
+    </div>
+    <div class="p-5" id="form-validation">
+        <div class="preview">
+            <form name="incomeform">
+                <div class="input-form">
+                    <label class="flex flex-col sm:flex-row"> Income </label>
+                    <input ng-model="pageinputs.narration" type="text" class="input w-full border mt-2" placeholder="Give a title for your income" required>
+                </div>
+                <br />
+                <div class="input-form">
+                    <label class="flex flex-col sm:flex-row"> Payment Date  </label>
+                    <input ng-model="pageinputs.incomedate" type="date" class="input w-full border mt-2" data-single-mode="true" placeholder="DD/MM/YYYY" required>
+                </div>
+                <div class="input-form mt-3">
+                    <label class="flex flex-col sm:flex-row"> Amount/ EMI</label>
+                    <input ng-model="pageinputs.amount" type="number" class="input w-full border mt-2" placeholder="₹" required>
+                </div>
+                <button type="submit" class="button bg-theme-1 text-white mt-5" ng-click="FormValidator()">Add</button>
+            </form>
+            
+        </div>
+    </div>
+
+</div>
+
+
+<!-- END: Form Validation -->
+<style>
+    @@media (min-width:1025px) {
+
+        #formbox {
+            margin-top: 10px !important;
+            width: 50%;
+            margin: auto;
+        }
+    }
+</style>
+
+
+@section scripts{
+    <script>
+    var app = angular.module('IncomeApp', []);
+    app.controller('IncomeCtrl', function ($scope, $http) {
+        
+
+        $scope.AddIncome = function () {
+            $http({
+                cache: false,
+                url: "/Dashboard/AddIncomeToDb",
+                method: "POST",
+                params: { data: JSON.stringify($scope.pageinputs) }, async:false,
+            }).then(function (data, status, headers, config) {
+                data = data.data;
+                if (data = false) {
+                    swal("Error", "Unable to Process Your Request", "error");
+                    $scope.pageinputs = {};
+                }
+                else {
+
+                    swal("Success", "Added Successfully", "success");
+                    $scope.pageinputs = {};
+                }
+            }, function errorCallback(response) {
+
+            });
+        }
+
+        $scope.FormValidator = function () {
+            if ($scope.incomeform.$valid) {
+                $scope.AddIncome();
+            }
+            else {
+                swal("Error", "Please Fill All the Required Fields", "warning");
+            }
+        }
+    });
+    </script>
+}

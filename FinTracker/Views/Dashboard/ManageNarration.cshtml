@@ -1,0 +1,257 @@
+﻿
+@{
+    ViewData["Title"] = "ManageNarration";
+}
+
+<div class="content" ng-app="narrationmanagerapp" ng-controller="narrationmanagerctrl" ng-init="GetNarration()">
+
+
+
+
+    <h2 class="intro-y text-lg font-medium mt-10">
+        Manage Narrations
+    </h2>
+    <div ng-show="addShow">
+        <br />
+    <a ng-click="show()" ng-show="addShow" class="button text-white bg-theme-1 shadow-md mr-2" style="margin-top:20px !important;">Cancel</a>
+</div>
+
+    <!--Begin Add Show-->
+    <div id="superlarge-modal-size-preview" ng-show="addShow">
+        <div class="">
+            <div class="intro-y flex items-center mt-8">
+                <h2 class="text-lg font-bold mr-auto">
+                    Add Narration
+                </h2>
+            </div>
+
+            <form name="narrationform" class="form-control">
+
+                <div class="intro-y box mt-5">
+                    <div class="flex flex-col sm:flex-row items-center p-5">
+                        <label class="w-full sm:w-20 sm:text-right sm:mr-5">Narration</label>
+                        <input type="text" class="input w-full rounded-full border mt-2 flex-1" required ng-model="pageinputs.narration" name="narration" placeholder="Eg. Bank Loan">
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row items-center p-5">
+                        <label class="w-full sm:w-20 sm:text-right sm:mr-5 ">Total Amount</label>
+                        <input type="text" class="input w-full rounded-full border mt-2 flex-1" required ng-model="pageinputs.totalAmount" name="totalamount" placeholder="₹">
+                    </div>
+                    
+
+                    <div class="flex flex-col sm:flex-row items-center p-5">
+                        <label class="w-full sm:w-20 sm:text-right sm:mr-5">Loan Start Date &nbsp; &nbsp;</label>
+                        <input type="date" class=" input w-100 rounded-full border mt-2" required ng-model="pageinputs.loanStartDate " name="loanstartdate" data-single-mode="true">
+                        <span>    <h6 class="text-gray-600 font-medium leading-none mt-3"><strong>&nbsp;&nbsp; Date</strong> will be considered as <strong>EMI Date</strong></h6></span>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row items-center p-5">
+                        <label class="w-full sm:w-20 sm:text-right sm:mr-5">Loan End Date &nbsp; &nbsp;</label>
+                        <input type="date" class=" input w-100 rounded-full border mt-2" required ng-model="pageinputs.loanEndDate" name="loanenddate" data-single-mode="true">
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row items-center p-5">
+                        <label class="w-full sm:w-20 sm:text-right sm:mr-5">Interest(%)</label>
+                        <input type="text" class="input w-full rounded-full border mt-2 flex-1" required ng-model="pageinputs.interest" name="emi" placeholder="%">
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row items-center p-5">
+                        <label class="w-full sm:w-20 sm:text-right sm:mr-5">EMI</label>
+                        <input type="text" class="input w-full rounded-full border mt-2 flex-1" required ng-model="pageinputs.emi" name="emi" placeholder="₹">
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row items-center p-5">
+                        <label class="w-full sm:w-20 sm:text-right sm:mr-5">Current Outstanding</label>
+                        <input type="text" class="input w-full rounded-full border mt-2 flex-1" required ng-model="pageinputs.currentOutstanding" name="emi" placeholder="₹">
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row items-center p-5">
+                        <button type="submit" class="button w-24 mr-1 mb-2 bg-theme-1 text-white" ng-click="FormValidator()">Save</button>
+                    </div>
+
+                </div>
+            </form>
+
+
+
+        </div>
+    </div>
+    <!--End Add Show-->
+    <div class="grid grid-cols-12 gap-6 mt-5 align-self-sm-center">
+        <div class="intro-y col-span-12 flex flex-wrap sm:flex-no-wrap items-center text-center mt-2 ">
+            <a ng-click="show()" ng-show="!addShow" class="button text-white bg-theme-1 shadow-md mr-2 ">Add New Narration</a>
+
+            <div class="hidden md:block mx-auto text-gray-600">Your Narrations</div>
+            <div class="w-full sm:w-auto mt-3 sm:mt-0 sm:ml-auto md:ml-0">
+                <div class="w-56 relative text-gray-700 dark:text-gray-300" ng-show="narrationList.length > 0">
+                    <input type="text" class="input w-56 box pr-10 placeholder-theme-13" ng-model="search" placeholder="Search...">
+                    <i class="w-4 h-4 absolute my-auto inset-y-0 mr-3 right-0" data-feather="search"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- BEGIN: Data List -->
+        <div class="intro-y col-span-12 overflow-auto lg:overflow-visible">
+            <div class="intro-y text-2xl font-bold mt-10  text-center" ng-show="narrationList.length == 0">Come On Add Some Narrations!</div>
+            <table class="table table-report -mt-2" ng-show="narrationList.length > 0">
+                <thead>
+                    <tr>
+                        <th class=" whitespace-no-wrap">Narration</th>
+                        <th class=" whitespace-no-wrap">Outstanding</th>
+                        <th class=" whitespace-no-wrap">Total amount</th>
+                        <th class=" whitespace-no-wrap">Interst(%)</th>
+                        <th class=" whitespace-no-wrap">EMI</th>
+                        <th class=" whitespace-no-wrap">Loan End Date</th>
+                        <th class=" whitespace-no-wrap">Loan Start Date</th>
+                        <th class="text-center whitespace-no-wrap">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="intro-x" ng-repeat="items in narrationList | filter:search">
+                        <td ng-bind="items.narration" class="font-medium r whitespace-no-wrap">
+                            <div hidden ng-bind="items.id"></div>
+
+                        </td>
+                        <td ng-bind="items.currentOutstanding" class="font-medium text-center whitespace-no-wrap">
+                        </td>
+                        <td ng-bind="items.totalAmount" class="font-medium text-center whitespace-no-wrap">
+                        </td>
+                        <td ng-bind="items.interest" class="font-medium text-center whitespace-no-wrap">
+                        </td>
+                        <td ng-bind="items.emi" class="font-medium text-center whitespace-no-wrap">
+                        </td>
+                        <td ng-bind="items.loanStartDate | date" class="font-medium text-center whitespace-no-wrap">
+                        </td>
+                        <td ng-bind="items.loanEndDate | date" class="font-medium text-center whitespace-no-wrap">
+                        </td>
+
+                        <td class="table-report__action w-56">
+                            <div class="flex justify-center items-center">
+                                <a class="flex items-center mr-3" href="javascript:;" style="" ng-click="processedit()"> <i data-feather="check-square" class="w-4 h-4 mr-1"></i> Edit </a>
+                                <a class="flex items-center text-theme-6" href="javascript:;" ng-click="DeleteNarration()"> <i data-feather="trash-2" class="w-4 h-4 mr-1"></i> Delete </a>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- END: Data List -->
+
+
+    </div>
+    <!-- END: Content -->
+</div>
+
+
+@section scripts{
+<script>
+
+ 
+
+    var app = angular.module('narrationmanagerapp', []);
+    app.controller('narrationmanagerctrl', function ($scope, $http) {
+        $scope.narrationList = [];
+        $scope.addShow = false;
+        $scope.search = '';
+
+
+        $scope.GetNarration = function () {
+            $http({
+                cache: false,
+                url: "/Dashboard/GetNarration",
+                method: "POST",
+
+
+            }).then(function (data, status, headers, config) {
+                data = data.data;
+                $scope.narrationList = [];
+                $scope.narrationList = data;
+            }, function errorCallback(response) {
+
+            });
+        }
+
+        $scope.DeleteNarration = function () {
+            swal({
+                title: "Are you sure?",
+                text: "Once deleted, you will not be able to recover this",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        $http({
+                            cache: false,
+                            url: "/Dashboard/DeleteNarration",
+                            method: "POST",
+                            params: { Id: this.items.id }, async: false,
+                        }).then(function (data, status, headers, config) {
+                            data = data.data;
+                            if (!data) {
+                                swal("Error", "Unable to Process Your Request", "error");
+                            }
+                            else {
+                                swal("Deleted", "", "success");
+                                $scope.GetNarration();
+                            }
+                        }, function errorCallback(response) {
+
+                        });
+
+                    }
+                });
+        }
+
+        $scope.processedit = function () {
+            $scope.addShow = true;
+            $scope.pageinputs = {};
+            $scope.pageinputs = this.items;
+        }
+
+        $scope.show = function () {
+            $scope.addShow = !$scope.addShow;
+        }
+
+        $scope.pageinputs = {};
+        $scope.AddNarration = function () {
+            $http({
+                cache: false,
+                url: "/Dashboard/AddNarration",
+                method: "POST",
+                params: { data: JSON.stringify($scope.pageinputs) }
+            }).then(function (data, status, headers, config) {
+                data = data.data;
+                if (data = false) {
+                    swal("Error", "Unable to Process Your Request", "error");
+                    $scope.pageinputs = {};
+                }
+                else {
+
+                    swal("Success", "Added Successfully", "success");
+                    $scope.pageinputs = {};
+                }
+            }, function errorCallback(response) {
+
+            });
+        }
+
+        $scope.FormValidator = function () {
+            if ($scope.narrationform.$valid) {
+                $scope.AddNarration();
+            }
+            else {
+                swal("Error", "Please Fill All the Required Fields", "warning");
+            }
+        }
+
+
+
+       
+    });
+       
+
+        
+
+</script>
+}

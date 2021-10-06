@@ -1,0 +1,126 @@
+﻿
+@{
+    ViewData["Title"] = "AddPayment";
+}
+
+<!-- BEGIN: Form Validation -->
+<div class="intro-y box" id="formbox" ng-app="PaymentApp" ng-controller="PaymentCtrl" ng-init="GetDebits()">
+    <div class="flex flex-col sm:flex-row items-center p-5 border-b border-gray-200 dark:border-dark-5">
+        <h2 class="font-medium text-base mr-auto">
+            Add Your Monthly Debt Payments
+        </h2>
+        <div class="w-full sm:w-auto flex items-center sm:ml-auto mt-3 sm:mt-0">
+        </div>
+    </div>
+    <div class="p-5" >
+        <div class="preview">
+            <form name="paymentsform">
+                <div class="input-form">
+                    <label class="flex flex-col sm:flex-row"> Debt </label>
+                    <div>
+                        <div>
+                            <select class="input w-full border mt-2" ng-model="pageinputs.debitref" ng-options="x as x.narration for x in DebitsList" required>
+                                <option class="block p-2 transition duration-300 ease-in-out bg-white dark:bg-dark-1 hover:bg-gray-200 dark:hover:bg-dark-2 rounded-md"></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="input-form">
+                    <label class="flex flex-col sm:flex-row"> Payment Date  </label>
+                    <input type="date" ng-model="pageinputs.paymentdate" class=" input w-full border mt-2" required>
+                </div>
+                <div class="input-form mt-3">
+                    <label class="flex flex-col sm:flex-row"> Amount/ EMI</label>
+                    <input ng-model="pageinputs.debitref.emi" type="number" class="input w-full border mt-2" placeholder="₹" required>
+                </div>
+                <div class="input-form mt-3">
+                    <label class="flex flex-col sm:flex-row">Outstanding(After EMI Payment)</label>
+                    <input  ng-model="currentOutstanding" type="number" class="input w-full border mt-2" placeholder="₹" value="{{pageinputs.debitref.currentOutstanding - pageinputs.debitref.emi}}" required>
+                </div>
+                <div class="font-extrabold p-lg-5">Current Outstanding : {{pageinputs.debitref.currentOutstanding}}</div>
+                <button class="button bg-theme-1 text-white mt-5" ng-click="FormValidator()">Add</button>
+            </form>
+            <h1 style="padding:10px;">
+            </h1>
+        </div>
+    </div>
+
+</div>
+
+
+<!-- END: Form Validation -->
+<style>
+    @@media (min-width:1025px) {
+
+        #formbox {
+            margin-top: 10px !important;
+            width: 50%;
+            margin: auto;
+        }
+    }
+</style>
+
+
+@section scripts{
+    <script>
+    var app = angular.module('PaymentApp', []);
+    app.controller('PaymentCtrl', function ($scope, $http) {
+        $scope.DebitsList = [];
+        $scope.addShow = true;
+        $scope.search = '';
+        $scope.GetDebits = function () {
+            $http({
+                cache: false,
+                url: "/Dashboard/GetDebits",
+                method: "POST",
+
+
+            }).then(function (data, status, headers, config) {
+                data = data.data;
+                $scope.DebitsList = [];
+                $scope.DebitsList = data;
+                $scope.currentOutstanding = (pageinputs.debitref.currentOutstanding - pageinputs.debitref.emi);
+
+            }, function errorCallback(response) {
+
+            });
+        }
+
+        $scope.AddPayment = function () {
+            $scope.pageinputs.debitrefid = $scope.pageinputs.debitref.id;
+            $scope.pageinputs.paymentAmount = $scope.pageinputs.debitref.emi;
+            
+            $http({
+                cache: false,
+                url: "/Dashboard/AddPaymentToDb",
+                method: "POST",
+                params: { data: JSON.stringify($scope.pageinputs), currentOutstanding:$scope.currentOutstanding }, async: false,
+            }).then(function (data, status, headers, config) {
+                data = data.data;
+                if (data = true) {
+                    swal("Success", "Added Successfully", "success");
+                    $scope.pageinputs = {};
+                    $scope.GetDebits();
+                }
+                else {
+
+                    swal("Error", "Unable to Process Your Request", "error");
+                    $scope.pageinputs = {};
+                }
+            }, function errorCallback(response) {
+
+            });
+        }
+
+        $scope.FormValidator = function () {
+            if ($scope.paymentsform.$valid) {
+                $scope.AddPayment();
+            }
+            else {
+                swal("Error", "Please Fill All the Required Fields", "warning");
+            }
+        }
+    });
+    </script>
+}

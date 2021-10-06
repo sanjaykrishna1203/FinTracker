@@ -1,0 +1,223 @@
+﻿
+@{
+    ViewData["Title"] = "Dashboard";
+}
+<body class="app" ng-app="dashboardApp" ng-controller="dashboardCtrl" ng-init="GetNarration();GetDashData();" >
+
+    <div class="flex">
+
+        <div class="content">
+
+            <!-- BEGIN: General Report -->
+            <div class="col-span-12 mt-8">
+                <div class="intro-y flex items-center h-10">
+                    <h2 class="text-lg font-medium truncate mr-5">
+                        General Report
+                    </h2>
+                </div>
+                <div class="grid grid-cols-12 gap-6 mt-5">
+                    <div class="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
+                        <div class="report-box zoom-in">
+                            <div class="box p-5">
+                                <div class="flex">
+                                    <i data-feather="activity" class="report-box__icon text-theme-10"></i>
+                                </div>
+                                <div class="text-3xl font-bold leading-8 mt-6" ng-bind="totalOutstanding"></div>
+                                <div class="text-base text-gray-600 mt-1">Total Outstanding</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
+                        <div class="report-box zoom-in">
+                            <div class="box p-5">
+                                <div class="flex">
+                                    <i data-feather="credit-card" class="report-box__icon text-theme-11"></i>
+                                </div>
+                                <div class="text-3xl font-bold leading-8 mt-6" ng-bind="totalEmi"></div>
+                                <div class="text-base text-gray-600 mt-1">Total Emi (This Month)</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
+                        <div class="report-box zoom-in">
+                            <div class="box p-5">
+                                <div class="flex">
+                                    <i data-feather="monitor" class="report-box__icon text-theme-12"></i>
+
+                                </div>
+                                <div class="text-3xl font-bold leading-8 mt-6" ng-bind="totalIncome"></div>
+                                <div class="text-base text-gray-600 mt-1">Total Income(This Month)</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
+                        <div class="report-box zoom-in">
+                            <div class="box p-5">
+                                <div class="flex">
+                                    <i data-feather="briefcase" class="report-box__icon text-theme-9"></i>
+
+                                </div>
+                                <div class="text-3xl font-bold leading-8 mt-6" ng-bind="totalDebt"></div>
+                                <div class="text-base text-gray-600 mt-1">Total Debt</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END: General Report -->
+            <div class="intro-y grid grid-cols-12 gap-6 mt-5">
+                <div class="col-span-12 lg:col-span-6">
+                    <!-- BEGIN: Vertical Bar Chart -->
+                    <div class="intro-y box">
+                        <div class="flex flex-col sm:flex-row items-center p-5 border-b border-gray-200 dark:border-dark-5">
+                            <h2 class="font-medium text-base mr-auto">
+                                Your Debt Summary
+                            </h2>
+
+                        </div>
+                        <div class="p-5" id="vertical-bar-chart">
+                            <div class="preview">
+                                <div id="piechart" height="400"></div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-span-12 lg:col-span-6">
+                    <!-- BEGIN: Stacked Bar Chart -->
+                    <div class="intro-y box">
+                        <div class="flex flex-col sm:flex-row items-center p-5 border-b border-gray-200 dark:border-dark-5">
+                            <h2 class="font-medium text-base mr-auto">
+                                Upcoming EMIs
+                            </h2>
+                        </div>
+                        <div class="p-5" id="stacked-bar-chart">
+
+                            <div ng-show="narrationList.length == 0">
+                                <h2 class="text-3xl text-gray-700 dark:text-gray-600 font-medium leading-none mt-3">You Have No EMIs this Month!</h2>
+                            </div>
+                            <div class="intro-y col-span-12 overflow-auto lg:overflow-visible">
+                                <table class="table table-report flex -mt-2" ng-show="narrationList.length > 0">
+                                    <thead>
+                                        <tr>
+                                            <th class=" whitespace-no-wrap">Narration</th>
+                                            <th class=" whitespace-no-wrap">EMI Date</th>
+                                            <th class=" whitespace-no-wrap">EMI</th>
+                                            <th class=" whitespace-no-wrap">Outstanding</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="intro-x" ng-repeat="items in narrationList">
+                                            <td ng-bind="items.narration" class="font-medium r whitespace-no-wrap"></td>
+                                            <td ng-bind="items.loanStartDate | date:'dd'" class="font-medium  whitespace-no-wrap"></td>
+                                            <td ng-bind="items.emi" class="font-medium text-center whitespace-no-wrap"></td>
+                                            <td ng-bind="items.currentOutstanding" class="font-medium text-center whitespace-no-wrap"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END: Stacked Bar Chart -->
+
+
+                </div>
+            </div>
+        </div>
+        <!-- END: Content -->
+    </div>
+
+</body>
+
+
+
+
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+
+
+@section scripts{
+    <script>
+
+        var app = angular.module('dashboardApp', []);
+        app.controller('dashboardCtrl', function ($scope, $http) {
+            $scope.narrationList = [];
+            $scope.DashData = [];
+            $scope.totalOutstanding = "";
+            $scope.totalEmi = "";
+            $scope.totalIncome = "";
+            $scope.totalDebt = "";
+
+
+            $scope.GetNarration = function () {
+                $http({
+                    cache: false,
+                    url: "/Dashboard/GetEmi",
+                    method: "POST",
+                    async: false,
+
+
+                }).then(function (data, status, headers, config) {
+                    data = data.data;
+                    $scope.narrationList = [];
+                    $scope.narrationList = data;
+                }, function errorCallback(response) {
+
+                });
+            }
+
+            $scope.GetDashData = function () {
+                $http({
+                    cache: false,
+                    url: "/Dashboard/GetDashData",
+                    method: "POST",
+                }).then(function (data, status, headers, config) {
+                    if (data != null) {
+                        data = data.data;
+                        $scope.DashData = [];
+                        $scope.DashData = data;
+                        $scope.totalOutstanding = $scope.DashData[0];
+                        $scope.totalEmi = $scope.DashData[1];
+                        $scope.totalIncome = $scope.DashData[2];
+                        $scope.totalDebt = $scope.DashData[3];
+                        $scope.totalPaid = $scope.DashData[4];
+
+                        google.charts.load('current', { 'packages': ['corechart'] });
+                        google.charts.setOnLoadCallback(drawChart);
+
+                        // Draw the chart and set the chart values
+                        function drawChart() {
+                            var data = google.visualization.arrayToDataTable([
+                                ['Title', 'Amount'],
+                                ['Paid', $scope.totalPaid],
+                                ['Outstanding', $scope.totalOutstanding],
+
+                            ]);
+
+                            // Optional; add a title and set the width and height of the chart
+                            var options = {};
+
+                            // Display the chart inside the <div> element with id="piechart"
+                            var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+                            chart.draw(data, options);
+                        }
+                        
+                    }
+                   
+
+                    
+                }, function errorCallback(response) {
+
+                });
+            }
+
+
+
+        });
+
+
+
+
+    </script>
+}
