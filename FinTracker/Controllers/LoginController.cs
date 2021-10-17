@@ -17,25 +17,21 @@ namespace FinTracker.Controllers
     public class LoginController : Controller
     {
         private readonly LoginService _loginservice;
-
         public LoginController(LoginService loginService)
         {
             _loginservice = loginService;
         }
-        
         [HttpGet]
         public IActionResult Login()
         {
             return View();
         }
-
-
         public IActionResult Register()
         {
             return View();
         }
         [HttpPost]
-       [ActionName("Login")]
+        [ActionName("Login")]
         [ValidateAntiForgeryToken]
         public IActionResult Validator(string username, string password)
         {
@@ -64,11 +60,11 @@ namespace FinTracker.Controllers
             catch (Exception ex)
             {
                 ViewBag.Error = "Some Error Occured, Please Try again Later!";
+                Console.WriteLine(ex.Message);
                 return View();
             }
 
         }
-
         public JsonResult AddUser(string data)
         {
             try
@@ -86,10 +82,10 @@ namespace FinTracker.Controllers
             }
             catch(Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 return Json(false);
             }
         }
-
         public async Task<IActionResult> LogoutAsync()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);

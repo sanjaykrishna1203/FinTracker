@@ -9,7 +9,6 @@ namespace FincTracker.Lib.Serivces
 {
     public class LoginService
     {
-
         public User Validator(string username, string password)
         {
             try
@@ -21,10 +20,10 @@ namespace FincTracker.Lib.Serivces
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 return null;
             }
         }
-
         public async Task<bool> AddUser( User data)
         {
             try
@@ -45,6 +44,7 @@ namespace FincTracker.Lib.Serivces
             }
             catch(Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 return false;
             }
         }

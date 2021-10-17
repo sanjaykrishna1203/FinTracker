@@ -55,6 +55,7 @@ namespace FinTracker.Controllers
             }
             catch(Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 return Json(false);
             }
         }
@@ -71,6 +72,7 @@ namespace FinTracker.Controllers
             }
             catch(Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 return Json(false);
             }
         }
