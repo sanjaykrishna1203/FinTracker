@@ -27,18 +27,37 @@ namespace FinTracker.Controllers
         {
             return View();
         }
-
         public IActionResult Narration()
         {
             return View();
         }
+        public IActionResult Expense()
+        {
+            return View();
+        }
+        public JsonResult AddExpenseToDb(string data)
+        {
+            try
+            {
+                if (data != null)
+                {
+                    Expense expense = JsonConvert.DeserializeObject<Expense>(data);
+                    var userid = Convert.ToInt32(HttpContext.Session.GetString(ApplicationConstants.UserRefId));
+                    expense.UserRefId = userid;
+                    var success = _dashboardservice.AddExpense(expense);
+                    return Json(success);
 
-        
-        //public IActionResult Narration(string data)
-        //{
-        //    ViewBag.Data = data;
-        //    return View();
-        //}
+                }
+                else
+                {
+                    return Json(false);
+                }
+            }
+            catch(Exception ex)
+            {
+                return Json(false);
+            }
+        }
         [HttpPost]
         public async Task<JsonResult> AddNarrationAsync(string data)
         {
@@ -59,28 +78,24 @@ namespace FinTracker.Controllers
         {
             return View();
         }
-
         public JsonResult GetNarration()
         {
             var user = Convert.ToInt32(HttpContext.Session.GetString(ApplicationConstants.UserRefId));
             var result = _dashboardservice.GetNarration(user);
             return Json(result);
         }
-
-        public JsonResult GetEmi()
+        public JsonResult GetEmi(int num)
         {
             var user = Convert.ToInt32(HttpContext.Session.GetString(ApplicationConstants.UserRefId));
-            var result = _dashboardservice.GetEmi(user);
+            var result = _dashboardservice.GetEmi(user, num);
             return Json(result);
         }
-
         public JsonResult GetDashData()
         {
             var user = Convert.ToInt32(HttpContext.Session.GetString(ApplicationConstants.UserRefId));
             var result = _dashboardservice.GetDashData(user);
             return Json(result);
         }
-
         public JsonResult DeleteNarration(int id)
         {
             var user =  Convert.ToInt32(HttpContext.Session.GetString(ApplicationConstants.UserRefId));
@@ -88,19 +103,16 @@ namespace FinTracker.Controllers
             return Json(result);
 
         }
-
         public IActionResult AddPayment()
         {
             return View();
         }
-
         public JsonResult GetDebits()
         {
             var userrefid = Convert.ToInt32(HttpContext.Session.GetString(ApplicationConstants.UserRefId));
             var result = _dashboardservice.GetDebits(userrefid);
             return Json(result);
         }
-
         public async Task<JsonResult> AddPaymentToDb(string data,string outstanding)
         {
             if(data!= null)
@@ -118,12 +130,10 @@ namespace FinTracker.Controllers
                 return Json(false);
             }
         }
-
         public IActionResult AddIncome()
         {
             return View();
         }
-
         public JsonResult AddIncomeToDb(string data)
         {
             if (data != null)

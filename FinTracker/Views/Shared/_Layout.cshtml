@@ -31,11 +31,11 @@
                 </a>
             </li>
             @*<li>
-                <a asp-action="Narration" asp-controller="Dashboard" class="menu">
-                    <div class="menu__icon"> <i data-feather="inbox"></i> </div>
-                    <div class="menu__title"> Add Narration </div>
-                </a>
-            </li>*@
+            <a asp-action="Narration" asp-controller="Dashboard" class="menu">
+                <div class="menu__icon"> <i data-feather="inbox"></i> </div>
+                <div class="menu__title"> Add Narration </div>
+            </a>
+        </li>*@
             <li>
                 <a asp-action="ManageNarration" asp-controller="Dashboard" class="menu">
                     <div class="menu__icon"> <i data-feather="edit"></i> </div>
@@ -52,6 +52,12 @@
                 <a asp-action="AddIncome" asp-controller="Dashboard" class="menu">
                     <div class="menu__icon"> <i data-feather="hard-drive"></i> </div>
                     <div class="menu__title">Add Income </div>
+                </a>
+            </li>
+            <li>
+                <a asp-action="Expense" asp-controller="Dashboard" class="menu">
+                    <div class="menu__icon"> <i data-feather="bar-chart-2"></i> </div>
+                    <div class="menu__title">Add Expense</div>
                 </a>
             </li>
         </ul>
@@ -74,11 +80,11 @@
                 </li>
 
                 @*<li>
-                    <a asp-action="Narration" asp-controller="Dashboard" class="side-menu @(ViewData["Title"].ToString()== "AddNarration"?"side-menu--active":"")">
-                        <div class="side-menu__icon"> <i data-feather="inbox"></i> </div>
-                        <div class="side-menu__title"> Add Debts </div>
-                    </a>
-                </li>*@
+            <a asp-action="Narration" asp-controller="Dashboard" class="side-menu @(ViewData["Title"].ToString()== "AddNarration"?"side-menu--active":"")">
+                <div class="side-menu__icon"> <i data-feather="inbox"></i> </div>
+                <div class="side-menu__title"> Add Debts </div>
+            </a>
+        </li>*@
                 <li>
                     <a asp-action="ManageNarration" asp-controller="Dashboard" class="side-menu @(ViewData["Title"].ToString()== "ManageNarration"?"side-menu--active":"") ">
                         <div class="side-menu__icon"> <i data-feather="edit"></i> </div>
@@ -95,6 +101,12 @@
                     <a asp-action="AddIncome" asp-controller="Dashboard" class="side-menu @(ViewData["Title"].ToString()== "AddIncome"?"side-menu--active":"") ">
                         <div class="side-menu__icon"> <i data-feather="hard-drive"></i> </div>
                         <div class="side-menu__title"> Add Income </div>
+                    </a>
+                </li>
+                <li>
+                    <a asp-action="Expense" asp-controller="Dashboard" class="side-menu @(ViewData["Title"].ToString()== "AddExpense"?"side-menu--active":"") ">
+                        <div class="side-menu__icon"> <i data-feather="bar-chart-2"></i> </div>
+                        <div class="side-menu__title"> Add Expense </div>
                     </a>
                 </li>
             </ul>
@@ -128,7 +140,7 @@
                             </div>
                          
                             <div class="p-2 border-t border-theme-40 dark:border-dark-3">
-                                <a href="" class="flex items-center block p-2 transition duration-300 ease-in-out hover:bg-theme-1 dark:hover:bg-dark-3 rounded-md"> <i data-feather="toggle-right" class="w-4 h-4 mr-2"></i> Logout </a>
+                                <a asp-action="Logout" asp-controller="Login" class="flex items-center block p-2 transition duration-300 ease-in-out hover:bg-theme-1 dark:hover:bg-dark-3 rounded-md"> <i data-feather="toggle-right" class="w-4 h-4 mr-2"></i> Logout </a>
                             </div>
                         </div>
                     </div>

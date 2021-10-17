@@ -21,6 +21,8 @@ namespace FinTracker
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                    //webBuilder.UseKestrel();
+                    //webBuilder.UseUrls("http://*:42226");
                 });
     }
 }

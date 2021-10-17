@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace FincTracker.Lib
 {
+
     public class ApplicationConstants
     {
         public static string UserName = "username";
@@ -13,3 +14,4 @@ namespace FincTracker.Lib
         public static int SessionAndCookieTimeOut = 10;
     }
 }
+//Scaffold-DbContext "Server=LAPTOP-UGES29ES\SQLEXPRESS;Database=FinTracker;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Entity -f

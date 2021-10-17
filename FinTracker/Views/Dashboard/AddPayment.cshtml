@@ -5,21 +5,25 @@
 
 <!-- BEGIN: Form Validation -->
 <div class="intro-y box" id="formbox" ng-app="PaymentApp" ng-controller="PaymentCtrl" ng-init="GetDebits()">
-    <div class="flex flex-col sm:flex-row items-center p-5 border-b border-gray-200 dark:border-dark-5">
+    <div style="margin:auto !important; top:auto;" ng-show="DebitsList.length == 0">
+        <h1 class="text-4xl text-gray-700 font-medium leading-none text-center">You Have No Debts, to Add Payments</h1>
+        <button style="margin:auto !important;" asp-action="ManageNarration" asp-controller="Dashboard" class="button bg-theme-1 text-white">Add Debts</button>
+    </div>
+    <div class="flex flex-col sm:flex-row items-center p-5 border-b border-gray-200 dark:border-dark-5" ng-show="DebitsList.length > 0">
         <h2 class="font-medium text-base mr-auto">
             Add Your Monthly Debt Payments
         </h2>
         <div class="w-full sm:w-auto flex items-center sm:ml-auto mt-3 sm:mt-0">
         </div>
     </div>
-    <div class="p-5" >
+    <div class="p-5" ng-show="DebitsList.length > 0">
         <div class="preview">
             <form name="paymentsform">
                 <div class="input-form">
                     <label class="flex flex-col sm:flex-row"> Debt </label>
                     <div>
                         <div>
-                            <select class="input w-full border mt-2" ng-model="pageinputs.debitref" ng-options="x as x.narration for x in DebitsList" required>
+                            <select class="input w-full border mt-2" ng-change="setValues();setOutstanding();" name="debitref" ng-model="pageinputs.debitref" ng-options="x as x.narration for x in DebitsList" required>
                                 <option class="block p-2 transition duration-300 ease-in-out bg-white dark:bg-dark-1 hover:bg-gray-200 dark:hover:bg-dark-2 rounded-md"></option>
                             </select>
                         </div>
@@ -28,15 +32,15 @@
                 <br />
                 <div class="input-form">
                     <label class="flex flex-col sm:flex-row"> Payment Date  </label>
-                    <input type="date" ng-model="pageinputs.paymentdate" class=" input w-full border mt-2" required>
+                    <input type="date" name="paydate" ng-model-options="{timezone:'UTC + 5:30'}" ng-model="pageinputs.paymentdate" class=" input w-full border mt-2" data-single-mode="true" required>
                 </div>
                 <div class="input-form mt-3">
                     <label class="flex flex-col sm:flex-row"> Amount/ EMI</label>
-                    <input ng-model="pageinputs.debitref.emi" type="number" class="input w-full border mt-2" placeholder="₹" required>
+                    <input ng-model="pageinputs.paymentamount" ng-blur="setOutstanding()" type="number" class="input w-full border mt-2" placeholder="₹" name="emi" required>
                 </div>
                 <div class="input-form mt-3">
                     <label class="flex flex-col sm:flex-row">Outstanding(After EMI Payment)</label>
-                    <input  ng-model="currentOutstanding" type="number" class="input w-full border mt-2" placeholder="₹" value="{{pageinputs.debitref.currentOutstanding - pageinputs.debitref.emi}}" required>
+                    <input type="number" name="paydate" ng-model="currentOutstanding" class=" input w-full border mt-2" data-single-mode="true" required>
                 </div>
                 <div class="font-extrabold p-lg-5">Current Outstanding : {{pageinputs.debitref.currentOutstanding}}</div>
                 <button class="button bg-theme-1 text-white mt-5" ng-click="FormValidator()">Add</button>
@@ -64,11 +68,12 @@
 
 @section scripts{
     <script>
+
     var app = angular.module('PaymentApp', []);
-    app.controller('PaymentCtrl', function ($scope, $http) {
+        app.controller('PaymentCtrl', function ($scope, $http,  $filter) {
         $scope.DebitsList = [];
         $scope.addShow = true;
-        $scope.search = '';
+            $scope.search = '';
         $scope.GetDebits = function () {
             $http({
                 cache: false,
@@ -80,8 +85,6 @@
                 data = data.data;
                 $scope.DebitsList = [];
                 $scope.DebitsList = data;
-                $scope.currentOutstanding = (pageinputs.debitref.currentOutstanding - pageinputs.debitref.emi);
-
             }, function errorCallback(response) {
 
             });
@@ -101,6 +104,7 @@
                 if (data = true) {
                     swal("Success", "Added Successfully", "success");
                     $scope.pageinputs = {};
+                    $scope.currentOutstanding = "";
                     $scope.GetDebits();
                 }
                 else {
@@ -121,6 +125,20 @@
                 swal("Error", "Please Fill All the Required Fields", "warning");
             }
         }
+
+            $scope.setValues = function () {
+                $scope.pageinputs.paymentdate = new Date($scope.pageinputs.debitref.loanStartDate);
+                $scope.pageinputs.paymentamount = $scope.pageinputs.debitref.emi;
+            }
+            $scope.setOutstanding = function () {
+
+                $scope.currentOutstanding = $scope.pageinputs.debitref.totalAmount - $scope.pageinputs.paymentamount;
+
+
+            }
+
+
+
     });
     </script>
 }

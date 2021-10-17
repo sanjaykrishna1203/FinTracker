@@ -10,6 +10,7 @@ namespace FinTracker.Dal.Entity
         public User()
         {
             Debits = new HashSet<Debit>();
+            Expenses = new HashSet<Expense>();
             Incomes = new HashSet<Income>();
             Payments = new HashSet<Payment>();
         }
@@ -23,6 +24,7 @@ namespace FinTracker.Dal.Entity
         public bool IsDeleted { get; set; }
 
         public virtual ICollection<Debit> Debits { get; set; }
+        public virtual ICollection<Expense> Expenses { get; set; }
         public virtual ICollection<Income> Incomes { get; set; }
         public virtual ICollection<Payment> Payments { get; set; }
     }

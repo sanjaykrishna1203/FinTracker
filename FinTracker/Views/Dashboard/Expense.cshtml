@@ -1,37 +1,38 @@
 ﻿
 @{
-    ViewData["Title"] = "AddIncome";
+    ViewData["Title"] = "AddExpense";
 }
 
 <!-- BEGIN: Form Validation -->
-<div class="intro-y box" id="formbox" ng-app="IncomeApp" ng-controller="IncomeCtrl" >
+<div class="intro-y box" id="formbox" ng-app="ExpenseApp" ng-controller="ExpenseCtrl">
     <div class="flex flex-col sm:flex-row items-center p-5 border-b border-gray-200 dark:border-dark-5">
         <h2 class="font-medium text-base mr-auto">
-           Add Your Income Here!
+            Add Your Expense Here!
         </h2>
         <div class="w-full sm:w-auto flex items-center sm:ml-auto mt-3 sm:mt-0">
         </div>
     </div>
     <div class="p-5" id="form-validation">
         <div class="preview">
-            <form name="incomeform">
+            <form name="expenseform">
                 <div class="input-form">
-                    <label class="flex flex-col sm:flex-row"> Income </label>
-                    <input ng-model="pageinputs.narration" type="text" class="input w-full border mt-2" placeholder="Give a title for your income" required>
+                    <label class="flex flex-col sm:flex-row"> Expense</label>
+                    <input ng-model="pageinputs.expensenarration" type="text" class="input w-full border mt-2" placeholder="Give a Title for your Expense" required>
                 </div>
                 <br />
                 <div class="input-form">
-                    <label class="flex flex-col sm:flex-row"> Income Date  </label>
-                    <input ng-model-options="{timezone:'UTC + 5:30'}" ng-model="pageinputs.incomedate" type="date" class="input w-full border mt-2" data-single-mode="true" placeholder="DD/MM/YYYY" required>
+                    <label class="flex flex-col sm:flex-row"> Expense Date </label>
+                    <input ng-model-options="{timezone:'UTC + 5:30'}" ng-model="pageinputs.expensedate" type="date" class="input w-full border mt-2" data-single-mode="true" placeholder="DD/MM/YYYY" required>
                 </div>
-                
+
                 <div class="input-form mt-3">
-                    <label class="flex flex-col sm:flex-row"> Amount</label>
-                    <input ng-model="pageinputs.amount" type="number" class="input w-full border mt-2" placeholder="₹" required>
+                    <label class="flex flex-col sm:flex-row">Amount</label>
+                    <input ng-model="pageinputs.Expenseamount" type="number" class="input w-full border mt-2" placeholder="₹" required>
                 </div>
                 <button type="submit" class="button bg-theme-1 text-white mt-5" ng-click="FormValidator()">Add</button>
+                {{expenseform.$valid}}
             </form>
-            
+
         </div>
     </div>
 
@@ -53,16 +54,17 @@
 
 @section scripts{
     <script>
-    var app = angular.module('IncomeApp', []);
-        app.controller('IncomeCtrl', function ($scope, $http) {
+    var app = angular.module('ExpenseApp', []);
+        app.controller('ExpenseCtrl', function ($scope, $http) {
             $scope.pageinputs = {};
-        $scope.pageinputs.incomedate = new Date();
-        $scope.AddIncome = function () {
+        $scope.pageinputs.expensedate = new Date();
+        $scope.AddExpense = function () {
             $http({
                 cache: false,
-                url: "/Dashboard/AddIncomeToDb",
+                url: "/Dashboard/AddExpenseToDb",
                 method: "POST",
-                params: { data: JSON.stringify($scope.pageinputs) }, async:false,
+                params: { data: JSON.stringify($scope.pageinputs) },
+                async: false,
             }).then(function (data, status, headers, config) {
                 data = data.data;
                 if (data = false) {
@@ -80,8 +82,8 @@
         }
 
         $scope.FormValidator = function () {
-            if ($scope.incomeform.$valid) {
-                $scope.AddIncome();
+            if ($scope.expenseform.$valid) {
+                $scope.AddExpense();
             }
             else {
                 swal("Error", "Please Fill All the Required Fields", "warning");
@@ -90,3 +92,4 @@
     });
     </script>
 }
+

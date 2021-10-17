@@ -23,76 +23,155 @@ namespace FincTracker.Lib.Serivces
             {
                
                 using FinTrackerContext db = new FinTrackerContext();
-                debit.ModifiedAt = DateTime.Now;
-                debit.CreatedAt = DateTime.Now;
-                db.Debits.Add(debit);
+                if(debit.Id == 0)
+                {
+                    debit.ModifiedAt = DateTime.Now;
+                    debit.CreatedAt = DateTime.Now;
+                    db.Debits.Add(debit);
+                }
+                else
+                {
+                    var data = db.Debits.Where(x => x.Id == debit.Id && !x.IsDeleted).FirstOrDefault();
+                    data.Interest = debit.Interest;
+                    data.LoanEndDate = debit.LoanEndDate;
+                    data.LoanStartDate = debit.LoanStartDate;
+                    data.ModifiedAt = DateTime.Now;
+                    data.Narration = debit.Narration;
+                    data.TotalAmount = debit.TotalAmount;
+                    data.Emi = debit.Emi;
+                    data.CurrentOutstanding = debit.CurrentOutstanding;
+                    
+
+                }
+               
                 await db.SaveChangesAsync();
                 return true;
             }
             catch(Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 return false;
             }
            
         }
-
         public List<Debit> GetNarration(int userrefid)
         {
-            using FinTrackerContext db = new FinTrackerContext();
-            var result = db.Debits.Where(x => x.UserRefId == userrefid && !x.IsDeleted).OrderByDescending(x=>x.Interest).ToList();
-            return result;
+            try
+            {
+                using FinTrackerContext db = new FinTrackerContext();
+                var result = db.Debits.Where(x => x.UserRefId == userrefid && !x.IsDeleted).OrderByDescending(x => x.Interest).ToList();
+                return result;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+           
         }
         public async Task<bool> DeleteNarration(int user, int id)
         {
-            using FinTrackerContext db = new FinTrackerContext();
-            var result = db.Debits.Where(x => x.UserRefId == user && x.Id == id).FirstOrDefault();
-            if(result != null)
+            try
             {
-                result.ModifiedAt = DateTime.Now;
-                result.IsDeleted = true;
-                await db.SaveChangesAsync();
-                return true;
+                using FinTrackerContext db = new FinTrackerContext();
+                var result = db.Debits.Where(x => x.UserRefId == user && x.Id == id).FirstOrDefault();
+                if (result != null)
+                {
+                    result.ModifiedAt = DateTime.Now;
+                    result.IsDeleted = true;
+                    await db.SaveChangesAsync();
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+           
+        }
+        public List<Debit> GetEmi(int userrefid, int num)
+        {
+            try
+            {
+                using FinTrackerContext db = new FinTrackerContext();
+                var li = db.Debits.Where(x=> x.UserRefId == userrefid && !x.IsDeleted).ToList();
+                li.ForEach(x =>x.LoanStartDate = FormatDebitDate(x.LoanStartDate));
+                var result = li.Where(x =>  x.LoanStartDate > DateTime.Now && x.LoanStartDate < DateTime.Now.AddDays(num)).ToList();
+                return result;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+           
+        }
+        private DateTime FormatDebitDate(DateTime day)
+        {
+            if(DateTime.Now.Day <= day.Day)
+            {
+                return new DateTime(DateTime.Now.Year, DateTime.Now.Month, day.Day);
+
+            }
+            if(DateTime.Now.Day > day.Day)
+            {
+                if(day.Month == 12)
+                {
+                    return new DateTime(DateTime.Now.AddYears(1).Year, DateTime.Now.AddMonths(1).Month, day.Day);
+
+                }
+                else
+                {
+                    return new DateTime(DateTime.Now.Year, DateTime.Now.AddMonths(1).Month, day.Day);
+
+                }
             }
             else
             {
-                return false;
+                return new DateTime(DateTime.Now.Year, DateTime.Now.Month, day.Day);
             }
         }
-
-        public List<Debit> GetEmi(int userrefid)
-        {
-            using FinTrackerContext db = new FinTrackerContext();
-            var result = db.Debits.Where(x => x.UserRefId == userrefid && !x.IsDeleted && x.LoanStartDate.Day > DateTime.Now.Day).OrderByDescending(x => x.Interest).ToList();
-            return result;
-        }
-
         public List<double> GetDashData(int userrefid)
         {
-            using FinTrackerContext db = new FinTrackerContext();
-            var LoanOutstanding = db.Debits.Where(x => x.UserRefId == userrefid && !x.IsDeleted).Select(x => x.CurrentOutstanding).ToList().Sum();
-            var TotalEmi = db.Debits.Where(x => x.UserRefId == userrefid && !x.IsDeleted).Select(x => x.Emi).ToList().Sum();
-            var TotalIncome = db.Incomes.Where(x => x.UserRefId == userrefid && x.CreatedAt.Month == DateTime.Now.Month).Select(x => x.Amount).ToList().Sum();
-            var TotalDebt = db.Debits.Where(x => x.UserRefId == userrefid && !x.IsDeleted).Select(x => x.TotalAmount).ToList().Sum();
-            var TotalPaid = db.Payments.Where(x => x.UserRefId == userrefid && !x.IsDeleted).Select(x => x.PaymentAmount).ToList().Sum();
-            var Data = new List<double>();
-            Data.Add(LoanOutstanding);
-            Data.Add(TotalEmi);
-            Data.Add(TotalIncome);
-            Data.Add(TotalDebt);
-            Data.Add(TotalPaid);
-            return Data;
+            try
+            {
+                using FinTrackerContext db = new FinTrackerContext();
+                var LoanOutstanding = db.Debits.Where(x => x.UserRefId == userrefid && !x.IsDeleted).Select(x => x.CurrentOutstanding).ToList().Sum();
+                var TotalEmi = db.Debits.Where(x => x.UserRefId == userrefid && !x.IsDeleted).Select(x => x.Emi).ToList().Sum();
+                var TotalIncome = db.Incomes.Where(x => x.UserRefId == userrefid && x.CreatedAt.Month == DateTime.Now.Month).Select(x => x.Amount).ToList().Sum();
+                var TotalExpense = db.Expenses.Where(x => x.UserRefId == userrefid && x.ExpenseDate.Month == DateTime.Now.Month).Select(x => x.ExpenseAmount).ToList().Sum();
+                var TotalPaid = db.Payments.Where(x => x.UserRefId == userrefid && !x.IsDeleted).Select(x => x.PaymentAmount).ToList().Sum();
+                var Data = new List<double>();
+                Data.Add(LoanOutstanding);
+                Data.Add(TotalEmi);
+                Data.Add(TotalIncome);
+                Data.Add(TotalExpense);
+                Data.Add(TotalPaid);
+                return Data;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+           
         }
-
-
-
-
-
         public List<Debit> GetDebits(int userrefid)
         {
             try
             {
                 using FinTrackerContext db = new FinTrackerContext();
                 var result = db.Debits.Where(x => x.UserRefId == userrefid && !x.IsDeleted && x.CurrentOutstanding !=0).ToList();
+                for(var i =0; i < result.Count; i++)
+                {
+                    result[i].LoanStartDate = new DateTime(DateTime.Now.Year,DateTime.Now.Month, result[i].LoanStartDate.Day);
+                }
+
                 if (result != null)
                 {
                     return (result);
@@ -104,11 +183,11 @@ namespace FincTracker.Lib.Serivces
             }
             catch(Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 return null;
             }
            
         }
-
         public async Task<bool> AddPayment(Payment pay,double outstanding)
         {
             try
@@ -124,10 +203,10 @@ namespace FincTracker.Lib.Serivces
             }
             catch(Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 return false;
             }
         }
-
         public async Task<bool> AddIncome(Income income)
         {
             try
@@ -141,6 +220,24 @@ namespace FincTracker.Lib.Serivces
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
+        public async Task<bool> AddExpense(Expense expense)
+        {
+            try
+            {
+                using FinTrackerContext db = new FinTrackerContext();
+                expense.CreatedAt = DateTime.Now;
+                expense.ModifiedAt = DateTime.Now;
+                db.Expenses.Add(expense);
+                await db.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
                 return false;
             }
         }

@@ -21,7 +21,7 @@
         <div class="">
             <div class="intro-y flex items-center mt-8">
                 <h2 class="text-lg font-bold mr-auto">
-                    Add Narration
+                    <span ng-show="!editShow">Add</span><span ng-show="editShow">Edit</span> Narration
                 </h2>
             </div>
 
@@ -32,23 +32,24 @@
                         <label class="w-full sm:w-20 sm:text-right sm:mr-5">Narration</label>
                         <input type="text" class="input w-full rounded-full border mt-2 flex-1" required ng-model="pageinputs.narration" name="narration" placeholder="Eg. Bank Loan">
                     </div>
+                    <input type="hidden" ng-model="pageinputs.id" />
 
                     <div class="flex flex-col sm:flex-row items-center p-5">
                         <label class="w-full sm:w-20 sm:text-right sm:mr-5 ">Total Amount</label>
                         <input type="text" class="input w-full rounded-full border mt-2 flex-1" required ng-model="pageinputs.totalAmount" name="totalamount" placeholder="₹">
                     </div>
-                    
+
 
                     <div class="flex flex-col sm:flex-row items-center p-5">
                         <label class="w-full sm:w-20 sm:text-right sm:mr-5">Loan Start Date &nbsp; &nbsp;</label>
-                        <input type="date" class=" input w-100 rounded-full border mt-2" required ng-model="pageinputs.loanStartDate " name="loanstartdate" data-single-mode="true">
-                        <span>    <h6 class="text-gray-600 font-medium leading-none mt-3"><strong>&nbsp;&nbsp; Date</strong> will be considered as <strong>EMI Date</strong></h6></span>
-                    </div>
+                        <input type="date" class=" input w-100 rounded-full border mt-2" required ng-model-options="{timezone:'UTC + 5:30'}" ng-model="pageinputs.loanStartDate" name="loanstartdate" data-single-mode="true">
+                        <span>    <h6 class="text-gray-600 font-medium leading-none mt-3"><strong>&nbsp;&nbsp;This Date</strong> will be considered as <strong>EMI Date</strong></h6></span>
+                    </div>{{pageinputs.loanStartDate}}
 
                     <div class="flex flex-col sm:flex-row items-center p-5">
                         <label class="w-full sm:w-20 sm:text-right sm:mr-5">Loan End Date &nbsp; &nbsp;</label>
-                        <input type="date" class=" input w-100 rounded-full border mt-2" required ng-model="pageinputs.loanEndDate" name="loanenddate" data-single-mode="true">
-                    </div>
+                        <input type="date" class=" input w-100 rounded-full border mt-2" required ng-model-options="{timezone:'UTC + 5:30'}" ng-model="pageinputs.loanEndDate" name="loanenddate" data-single-mode="true">
+                    </div>{{pageinputs.loanEndDate}}
 
                     <div class="flex flex-col sm:flex-row items-center p-5">
                         <label class="w-full sm:w-20 sm:text-right sm:mr-5">Interest(%)</label>
@@ -66,7 +67,8 @@
                     </div>
 
                     <div class="flex flex-col sm:flex-row items-center p-5">
-                        <button type="submit" class="button w-24 mr-1 mb-2 bg-theme-1 text-white" ng-click="FormValidator()">Save</button>
+                        <button ng-show="!editShow" type="submit" class="button w-24 mr-1 mb-2 bg-theme-1 text-white" ng-click="FormValidator()">Save</button>
+                        <button ng-show="editShow" type="submit" class="button w-24 mr-1 mb-2 bg-theme-1 text-white" ng-click="FormValidator()">Update</button>
                     </div>
 
                 </div>
@@ -101,8 +103,8 @@
                         <th class=" whitespace-no-wrap">Total amount</th>
                         <th class=" whitespace-no-wrap">Interst(%)</th>
                         <th class=" whitespace-no-wrap">EMI</th>
-                        <th class=" whitespace-no-wrap">Loan End Date</th>
                         <th class=" whitespace-no-wrap">Loan Start Date</th>
+                        <th class=" whitespace-no-wrap">Loan End Date</th>
                         <th class="text-center whitespace-no-wrap">Actions</th>
                     </tr>
                 </thead>
@@ -153,6 +155,7 @@
         $scope.narrationList = [];
         $scope.addShow = false;
         $scope.search = '';
+        $scope.editShow = false;
 
 
         $scope.GetNarration = function () {
@@ -205,12 +208,16 @@
 
         $scope.processedit = function () {
             $scope.addShow = true;
+            $scope.editShow = true;
             $scope.pageinputs = {};
             $scope.pageinputs = this.items;
+            $scope.pageinputs.loanEndDate = new Date(this.items.loanEndDate);
+            $scope.pageinputs.loanStartDate = new Date(this.items.loanStartDate);
         }
 
         $scope.show = function () {
             $scope.addShow = !$scope.addShow;
+            $scope.editShow = false;
         }
 
         $scope.pageinputs = {};
@@ -222,13 +229,14 @@
                 params: { data: JSON.stringify($scope.pageinputs) }
             }).then(function (data, status, headers, config) {
                 data = data.data;
-                if (data = false) {
-                    swal("Error", "Unable to Process Your Request", "error");
+                if (data = true) {
+                    swal("Success", "Added Successfully", "success");
                     $scope.pageinputs = {};
+                    $scope.GetNarration();
+
                 }
                 else {
-
-                    swal("Success", "Added Successfully", "success");
+                    swal("Error", "Unable to Process Your Request", "error");
                     $scope.pageinputs = {};
                 }
             }, function errorCallback(response) {

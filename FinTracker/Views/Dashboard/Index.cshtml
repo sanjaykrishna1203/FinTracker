@@ -20,10 +20,11 @@
                         <div class="report-box zoom-in">
                             <div class="box p-5">
                                 <div class="flex">
-                                    <i data-feather="activity" class="report-box__icon text-theme-10"></i>
+                                    <i data-feather="briefcase" class="report-box__icon text-theme-9"></i>
+
                                 </div>
-                                <div class="text-3xl font-bold leading-8 mt-6" ng-bind="totalOutstanding"></div>
-                                <div class="text-base text-gray-600 mt-1">Total Outstanding</div>
+                                <div class="text-3xl font-bold leading-8 mt-6" ng-bind="totalExpense"></div>
+                                <div class="text-base text-gray-600 mt-1">Total Expenses(This Month)</div>
                             </div>
                         </div>
                     </div>
@@ -54,14 +55,14 @@
                         <div class="report-box zoom-in">
                             <div class="box p-5">
                                 <div class="flex">
-                                    <i data-feather="briefcase" class="report-box__icon text-theme-9"></i>
-
+                                    <i data-feather="activity" class="report-box__icon text-theme-10"></i>
                                 </div>
-                                <div class="text-3xl font-bold leading-8 mt-6" ng-bind="totalDebt"></div>
-                                <div class="text-base text-gray-600 mt-1">Total Debt</div>
+                                <div class="text-3xl font-bold leading-8 mt-6" ng-bind="totalOutstanding"></div>
+                                <div class="text-base text-gray-600 mt-1">Total Outstanding</div>
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
             <!-- END: General Report -->
@@ -90,11 +91,18 @@
                             <h2 class="font-medium text-base mr-auto">
                                 Upcoming EMIs
                             </h2>
+                            <div class=" dropdown sm:w-auto flex items-center sm:ml-auto mt-3 sm:mt-0">
+                                <select ng-change="GetNarration()" name="numbers" ng-model="number" >
+                                    <option selected value="7">7</option>
+                                    <option value="15">15</option>
+                                    <option value="30">30</option>
+                                </select>
+                            </div>
                         </div>
                         <div class="p-5" id="stacked-bar-chart">
 
                             <div ng-show="narrationList.length == 0">
-                                <h2 class="text-3xl text-gray-700 dark:text-gray-600 font-medium leading-none mt-3">You Have No EMIs this Month!</h2>
+                                <h2 class="text-3xl text-gray-700 dark:text-gray-600 font-medium leading-none mt-3">You Have No EMIs for the next {{number}} days!</h2>
                             </div>
                             <div class="intro-y col-span-12 overflow-auto lg:overflow-visible">
                                 <table class="table table-report flex -mt-2" ng-show="narrationList.length > 0">
@@ -147,6 +155,7 @@
             $scope.totalOutstanding = "";
             $scope.totalEmi = "";
             $scope.totalIncome = "";
+            $scope.number = "7";
             $scope.totalDebt = "";
 
 
@@ -155,6 +164,7 @@
                     cache: false,
                     url: "/Dashboard/GetEmi",
                     method: "POST",
+                    params: { num: $scope.number },
                     async: false,
 
 
@@ -180,7 +190,7 @@
                         $scope.totalOutstanding = $scope.DashData[0];
                         $scope.totalEmi = $scope.DashData[1];
                         $scope.totalIncome = $scope.DashData[2];
-                        $scope.totalDebt = $scope.DashData[3];
+                        $scope.totalExpense = $scope.DashData[3];
                         $scope.totalPaid = $scope.DashData[4];
 
                         google.charts.load('current', { 'packages': ['corechart'] });

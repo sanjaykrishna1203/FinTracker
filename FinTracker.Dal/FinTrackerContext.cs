@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
 #nullable disable
-//Scaffold-DbContext "Server=LAPTOP-UGES29ES\SQLEXPRESS;Database=FinTracker;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Entity
 
 namespace FinTracker.Dal.Entity
 {
@@ -19,6 +18,7 @@ namespace FinTracker.Dal.Entity
         }
 
         public virtual DbSet<Debit> Debits { get; set; }
+        public virtual DbSet<Expense> Expenses { get; set; }
         public virtual DbSet<Income> Incomes { get; set; }
         public virtual DbSet<Payment> Payments { get; set; }
         public virtual DbSet<User> Users { get; set; }
@@ -27,6 +27,7 @@ namespace FinTracker.Dal.Entity
         {
             if (!optionsBuilder.IsConfigured)
             {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
                 optionsBuilder.UseSqlServer("Server=LAPTOP-UGES29ES\\SQLEXPRESS;Database=FinTracker;Trusted_Connection=True;");
             }
         }
@@ -62,6 +63,29 @@ namespace FinTracker.Dal.Entity
                     .HasForeignKey(d => d.UserRefId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Debits_Users");
+            });
+
+            modelBuilder.Entity<Expense>(entity =>
+            {
+                entity.ToTable("Expense");
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.CreatedAt).HasColumnType("datetime");
+
+                entity.Property(e => e.ExpenseDate).HasColumnType("datetime");
+
+                entity.Property(e => e.ExpenseNarration)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.ModifiedAt).HasColumnType("datetime");
+
+                entity.HasOne(d => d.UserRef)
+                    .WithMany(p => p.Expenses)
+                    .HasForeignKey(d => d.UserRefId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Expense_Users");
             });
 
             modelBuilder.Entity<Income>(entity =>

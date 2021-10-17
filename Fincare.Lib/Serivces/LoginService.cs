@@ -25,5 +25,29 @@ namespace FincTracker.Lib.Serivces
             }
         }
 
+        public async Task<bool> AddUser( User data)
+        {
+            try
+            {
+                using FinTrackerContext db = new FinTrackerContext();
+                User user = new User();
+                var username = db.Users.Where(x => !x.IsDeleted).Select(x => x.Username).ToList();
+                if(username.Contains(data.Username))
+                {
+                    return false;
+                }
+                else
+                {
+                    db.Users.Add(data);
+                    await db.SaveChangesAsync();
+                    return true;
+                }
+            }
+            catch(Exception ex)
+            {
+                return false;
+            }
+        }
+
     }
 }
