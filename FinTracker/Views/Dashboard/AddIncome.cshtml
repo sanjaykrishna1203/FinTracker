@@ -65,7 +65,7 @@
                 params: { data: JSON.stringify($scope.pageinputs) }, async:false,
             }).then(function (data, status, headers, config) {
                 data = data.data;
-                if (data = false) {
+                if (!data) {
                     swal("Error", "Unable to Process Your Request", "error");
                     $scope.pageinputs = {};
                 }

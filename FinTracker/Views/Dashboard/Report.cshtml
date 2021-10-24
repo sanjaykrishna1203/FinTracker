@@ -1,0 +1,213 @@
+﻿
+@{
+    ViewData["Title"] = "Report";
+}
+
+<br />
+<div ng-app="ReportApp" ng-controller="ReportCtrl">
+
+    <div class="flex flex-col sm:flex-row items-center">
+        <div class="mt-2">
+            <label id="label" for="fromdate">From Date</label>
+        </div>
+        <div class="mt-2">
+            <input type="date" name="fromdate" ng-model-options="{timezone:'UTC + 5:30'}" ng-model="fromdate" class=" input w-full border mt-2" data-single-mode="true" required>
+        </div>
+        <div class="mt-2">
+            <label id="label" for="todate">To Date</label>
+        </div>
+        <div class="mt-2">
+            <input type="date" name="todate" ng-model-options="{timezone:'UTC + 5:30'}" ng-model="todate" class=" input w-full border mt-2" data-single-mode="true" required>
+        </div>
+        <div class="mt-2">
+            <button id="getreport" class="button mr-1 mb-2 bg-theme-1 text-white" ng-click="GetIncomeReport();GetExpenseReport();GetData()">Get Reports</button>
+        </div>
+       
+    </div>
+    
+
+
+    <div class="grid grid-cols-12 gap-6 mt-5">
+        <div class="intro-y col-span-12 lg:col-span-6">
+            <!-- BEGIN: Income Table -->
+            <div class="intro-y box">
+                <div class="flex flex-col sm:flex-row items-center p-5 border-b border-gray-200">
+                    <h2 class="font-medium text-base mr-auto">
+                        Income Report
+                    </h2>
+                    <div class="w-full sm:w-auto flex items-center sm:ml-auto mt-3 sm:mt-0">
+                        <div class="mr-3">Total Income : {{totalincome}}</div>
+                    </div>
+                </div>
+                <div class="p-5" id="head-options-table">
+                    <div class="preview">
+                        <div class="overflow-x-auto">
+                            <table class="table">
+                                <thead>
+                                    <tr class="bg-gray-700 dark:bg-dark-1 text-white">
+                                        <th class="whitespace-no-wrap">Date</th>
+                                        <th class="whitespace-no-wrap">Narration</th>
+                                        <th class="whitespace-no-wrap">Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="items in IncomeList">
+                                        <td ng-bind="items.incomeDate | date" class="border-b dark:border-dark-5"></td>
+                                        <td ng-bind="items.narration" class="border-b dark:border-dark-5"></td>
+                                        <td ng-bind="items.amount" class="border-b dark:border-dark-5"></td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                    <div class="source-code hidden">
+                        <button data-target="#copy-head-options-table" class="copy-code button button--sm border flex items-center text-gray-700 dark:border-dark-5 dark:text-gray-300"> <i data-feather="file" class="w-4 h-4 mr-2"></i> Copy example code </button>
+                        <div class="overflow-y-auto h-64 mt-3">
+                            <pre class="source-preview" id="copy-head-options-table"> <code class="text-xs p-0 rounded-md html pl-5 pt-8 pb-4 -mb-10 -mt-10"> HTMLOpenTagdiv class=&quot;overflow-x-auto&quot;HTMLCloseTag HTMLOpenTagtable class=&quot;table&quot;HTMLCloseTag HTMLOpenTagtheadHTMLCloseTag HTMLOpenTagtr class=&quot;bg-gray-700 dark:bg-dark-1 text-white&quot;HTMLCloseTag HTMLOpenTagth class=&quot;whitespace-no-wrap&quot;HTMLCloseTag#HTMLOpenTag/thHTMLCloseTag HTMLOpenTagth class=&quot;whitespace-no-wrap&quot;HTMLCloseTagFirst NameHTMLOpenTag/thHTMLCloseTag HTMLOpenTagth class=&quot;whitespace-no-wrap&quot;HTMLCloseTagLast NameHTMLOpenTag/thHTMLCloseTag HTMLOpenTagth class=&quot;whitespace-no-wrap&quot;HTMLCloseTagUsernameHTMLOpenTag/thHTMLCloseTag HTMLOpenTag/trHTMLCloseTag HTMLOpenTag/theadHTMLCloseTag HTMLOpenTagtbodyHTMLCloseTag HTMLOpenTagtrHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTag1HTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTagAngelinaHTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTagJolieHTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTag@angelinajolieHTMLOpenTag/tdHTMLCloseTag HTMLOpenTag/trHTMLCloseTag HTMLOpenTagtrHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTag2HTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTagBradHTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTagPittHTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTag@bradpittHTMLOpenTag/tdHTMLCloseTag HTMLOpenTag/trHTMLCloseTag HTMLOpenTagtrHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTag3HTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTagCharlieHTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTagHunnamHTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTag@charliehunnamHTMLOpenTag/tdHTMLCloseTag HTMLOpenTag/trHTMLCloseTag HTMLOpenTag/tbodyHTMLCloseTag HTMLOpenTag/tableHTMLCloseTag HTMLOpenTagtable class=&quot;table mt-5&quot;HTMLCloseTag HTMLOpenTagtheadHTMLCloseTag HTMLOpenTagtr class=&quot;bg-gray-200 text-gray-700&quot;HTMLCloseTag HTMLOpenTagth class=&quot;whitespace-no-wrap&quot;HTMLCloseTag#HTMLOpenTag/thHTMLCloseTag HTMLOpenTagth class=&quot;whitespace-no-wrap&quot;HTMLCloseTagFirst NameHTMLOpenTag/thHTMLCloseTag HTMLOpenTagth class=&quot;whitespace-no-wrap&quot;HTMLCloseTagLast NameHTMLOpenTag/thHTMLCloseTag HTMLOpenTagth class=&quot;whitespace-no-wrap&quot;HTMLCloseTagUsernameHTMLOpenTag/thHTMLCloseTag HTMLOpenTag/trHTMLCloseTag HTMLOpenTag/theadHTMLCloseTag HTMLOpenTagtbodyHTMLCloseTag HTMLOpenTagtrHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTag1HTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTagAngelinaHTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTagJolieHTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTag@angelinajolieHTMLOpenTag/tdHTMLCloseTag HTMLOpenTag/trHTMLCloseTag HTMLOpenTagtrHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTag2HTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTagBradHTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTagPittHTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTag@bradpittHTMLOpenTag/tdHTMLCloseTag HTMLOpenTag/trHTMLCloseTag HTMLOpenTagtrHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTag3HTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTagCharlieHTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTagHunnamHTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTag@charliehunnamHTMLOpenTag/tdHTMLCloseTag HTMLOpenTag/trHTMLCloseTag HTMLOpenTag/tbodyHTMLCloseTag HTMLOpenTag/tableHTMLCloseTag HTMLOpenTag/divHTMLCloseTag </code> </pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END: Income Table -->
+
+        </div>
+        <div class="intro-y col-span-12 lg:col-span-6">
+            <!-- BEGIN: Expense Table -->
+            <div class="intro-y box">
+                <div class="flex flex-col sm:flex-row items-center p-5 border-b border-gray-200">
+                    <h2 class="font-medium text-base mr-auto">
+                        Expense Report
+                    </h2>
+                    <div class="w-full sm:w-auto flex items-center sm:ml-auto mt-3 sm:mt-0">
+                        <div class="mr-3">Total Expense : {{totalexpense}}</div>
+                    </div>
+                </div>
+                <div class="p-5" id="head-options-table">
+                    <div class="preview">
+                        <div class="overflow-x-auto">
+                            <table class="table">
+                                <thead>
+                                    <tr class="bg-gray-700 dark:bg-dark-1 text-white">
+                                        <th class="whitespace-no-wrap">Date</th>
+                                        <th class="whitespace-no-wrap">Narration</th>
+                                        <th class="whitespace-no-wrap">Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="item in ExpenseList">
+                                        <td ng-bind="item.expenseDate | date" class="border-b dark:border-dark-5"></td>
+                                        <td ng-bind="item.expenseNarration" class="border-b dark:border-dark-5"></td>
+                                        <td ng-bind="item.expenseAmount" class="border-b dark:border-dark-5"></td>
+                                    </tr>
+                                    
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                    <div class="source-code hidden">
+                        <button data-target="#copy-head-options-table" class="copy-code button button--sm border flex items-center text-gray-700 dark:border-dark-5 dark:text-gray-300"> <i data-feather="file" class="w-4 h-4 mr-2"></i> Copy example code </button>
+                        <div class="overflow-y-auto h-64 mt-3">
+                            <pre class="source-preview" id="copy-head-options-table"> <code class="text-xs p-0 rounded-md html pl-5 pt-8 pb-4 -mb-10 -mt-10"> HTMLOpenTagdiv class=&quot;overflow-x-auto&quot;HTMLCloseTag HTMLOpenTagtable class=&quot;table&quot;HTMLCloseTag HTMLOpenTagtheadHTMLCloseTag HTMLOpenTagtr class=&quot;bg-gray-700 dark:bg-dark-1 text-white&quot;HTMLCloseTag HTMLOpenTagth class=&quot;whitespace-no-wrap&quot;HTMLCloseTag#HTMLOpenTag/thHTMLCloseTag HTMLOpenTagth class=&quot;whitespace-no-wrap&quot;HTMLCloseTagFirst NameHTMLOpenTag/thHTMLCloseTag HTMLOpenTagth class=&quot;whitespace-no-wrap&quot;HTMLCloseTagLast NameHTMLOpenTag/thHTMLCloseTag HTMLOpenTagth class=&quot;whitespace-no-wrap&quot;HTMLCloseTagUsernameHTMLOpenTag/thHTMLCloseTag HTMLOpenTag/trHTMLCloseTag HTMLOpenTag/theadHTMLCloseTag HTMLOpenTagtbodyHTMLCloseTag HTMLOpenTagtrHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTag1HTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTagAngelinaHTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTagJolieHTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTag@angelinajolieHTMLOpenTag/tdHTMLCloseTag HTMLOpenTag/trHTMLCloseTag HTMLOpenTagtrHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTag2HTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTagBradHTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTagPittHTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTag@bradpittHTMLOpenTag/tdHTMLCloseTag HTMLOpenTag/trHTMLCloseTag HTMLOpenTagtrHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTag3HTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTagCharlieHTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTagHunnamHTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTag@charliehunnamHTMLOpenTag/tdHTMLCloseTag HTMLOpenTag/trHTMLCloseTag HTMLOpenTag/tbodyHTMLCloseTag HTMLOpenTag/tableHTMLCloseTag HTMLOpenTagtable class=&quot;table mt-5&quot;HTMLCloseTag HTMLOpenTagtheadHTMLCloseTag HTMLOpenTagtr class=&quot;bg-gray-200 text-gray-700&quot;HTMLCloseTag HTMLOpenTagth class=&quot;whitespace-no-wrap&quot;HTMLCloseTag#HTMLOpenTag/thHTMLCloseTag HTMLOpenTagth class=&quot;whitespace-no-wrap&quot;HTMLCloseTagFirst NameHTMLOpenTag/thHTMLCloseTag HTMLOpenTagth class=&quot;whitespace-no-wrap&quot;HTMLCloseTagLast NameHTMLOpenTag/thHTMLCloseTag HTMLOpenTagth class=&quot;whitespace-no-wrap&quot;HTMLCloseTagUsernameHTMLOpenTag/thHTMLCloseTag HTMLOpenTag/trHTMLCloseTag HTMLOpenTag/theadHTMLCloseTag HTMLOpenTagtbodyHTMLCloseTag HTMLOpenTagtrHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTag1HTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTagAngelinaHTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTagJolieHTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTag@angelinajolieHTMLOpenTag/tdHTMLCloseTag HTMLOpenTag/trHTMLCloseTag HTMLOpenTagtrHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTag2HTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTagBradHTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTagPittHTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTag@bradpittHTMLOpenTag/tdHTMLCloseTag HTMLOpenTag/trHTMLCloseTag HTMLOpenTagtrHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTag3HTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTagCharlieHTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTagHunnamHTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTag@charliehunnamHTMLOpenTag/tdHTMLCloseTag HTMLOpenTag/trHTMLCloseTag HTMLOpenTag/tbodyHTMLCloseTag HTMLOpenTag/tableHTMLCloseTag HTMLOpenTag/divHTMLCloseTag </code> </pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END:Expense Table -->
+
+        </div>
+    </div>
+</div>
+
+<style>
+    @@media (min-width:1025px) {
+        #getreport {
+            margin-left: 30px;
+        }
+       #label{
+           padding:20px;
+           font-weight:bold;
+
+       }
+    }
+    #label {
+        font-weight: bold;
+    }
+</style>
+
+@section scripts{
+    <script>
+        var app = angular.module('ReportApp', []);
+        app.controller('ReportCtrl', function ($scope, $http) {
+            $scope.IncomeList = {};
+            $scope.ExpenseList = {};
+            $scope.DashData = [];
+      
+
+            $scope.GetIncomeReport = function () {
+                $http({
+                    cache: false,
+                    url: "/Dashboard/GetIncome",
+                    method: "POST",
+                    params: {fromDate:$scope.fromdate, toDate:$scope.todate }
+
+                }).then(function (data, status, headers, config) {
+                    data = data.data;
+                    $scope.IncomeList = [];
+                    $scope.IncomeList = data;
+                }, function errorCallback(response) {
+
+                });
+            }
+
+            $scope.GetExpenseReport = function () {
+                $http({
+                    cache: false,
+                    url: "/Dashboard/GetExpense",
+                    method: "POST",
+                    params: {fromDate:$scope.fromdate, toDate:$scope.todate }
+
+                }).then(function (data, status, headers, config) {
+                    data = data.data;
+                    $scope.ExpenseList = [];
+                    $scope.ExpenseList = data;
+                }, function errorCallback(response) {
+
+                });
+            }
+
+            $scope.GetData = function () {
+                $http({
+                    cache: false,
+                    url: "/Dashboard/GetReportData",
+                    method: "POST",
+                    params: { fromDate: $scope.fromdate, toDate: $scope.todate }, async: false,
+
+                }).then(function(data, status, headers, config) {
+                    data = data.data;
+                    $scope.DashData = [];
+                    $scope.DashData = data;
+                    $scope.totalincome = $scope.DashData[0];
+                    $scope.totalexpense = $scope.DashData[1];
+                }, function errorCallback(response) {
+
+                });
+            }
+
+            var today = new Date();
+            var priorDate = new Date().setDate(today.getDate() - 30);
+            $scope.fromdate = new Date(priorDate);
+            $scope.todate = new Date();
+            $scope.GetIncomeReport();
+            $scope.GetExpenseReport();
+            $scope.GetData();
+
+
+
+        });
+
+
+    </script>
+}

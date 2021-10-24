@@ -56,8 +56,14 @@
             </li>
             <li>
                 <a asp-action="Expense" asp-controller="Dashboard" class="menu">
-                    <div class="menu__icon"> <i data-feather="bar-chart-2"></i> </div>
+                    <div class="menu__icon"> <i data-feather="book"></i> </div>
                     <div class="menu__title">Add Expense</div>
+                </a>
+            </li>
+            <li>
+                <a asp-action="Report" asp-controller="Dashboard" class="menu">
+                    <div class="menu__icon"> <i data-feather="bar-chart-2"></i> </div>
+                    <div class="menu__title">Reports</div>
                 </a>
             </li>
         </ul>
@@ -105,8 +111,14 @@
                 </li>
                 <li>
                     <a asp-action="Expense" asp-controller="Dashboard" class="side-menu @(ViewData["Title"].ToString()== "AddExpense"?"side-menu--active":"") ">
-                        <div class="side-menu__icon"> <i data-feather="bar-chart-2"></i> </div>
+                        <div class="side-menu__icon"> <i data-feather="book"></i> </div>
                         <div class="side-menu__title"> Add Expense </div>
+                    </a>
+                </li>
+                <li>
+                    <a asp-action="Report" asp-controller="Dashboard" class="side-menu @(ViewData["Title"].ToString()== "Report"?"side-menu--active":"") ">
+                        <div class="side-menu__icon"> <i data-feather="bar-chart-2"></i> </div>
+                        <div class="side-menu__title"> Reports </div>
                     </a>
                 </li>
             </ul>

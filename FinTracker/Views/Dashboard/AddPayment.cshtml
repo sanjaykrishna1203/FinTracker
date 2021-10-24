@@ -101,16 +101,18 @@
                 params: { data: JSON.stringify($scope.pageinputs), currentOutstanding:$scope.currentOutstanding }, async: false,
             }).then(function (data, status, headers, config) {
                 data = data.data;
-                if (data = true) {
+                if (!data) {
+                    swal("Error", "Unable to Process Your Request", "error");
+                    $scope.pageinputs = {};
+                }
+                else {
                     swal("Success", "Added Successfully", "success");
                     $scope.pageinputs = {};
                     $scope.currentOutstanding = "";
                     $scope.GetDebits();
-                }
-                else {
 
-                    swal("Error", "Unable to Process Your Request", "error");
-                    $scope.pageinputs = {};
+
+                    
                 }
             }, function errorCallback(response) {
 
@@ -132,7 +134,7 @@
             }
             $scope.setOutstanding = function () {
 
-                $scope.currentOutstanding = $scope.pageinputs.debitref.totalAmount - $scope.pageinputs.paymentamount;
+                $scope.currentOutstanding = $scope.pageinputs.debitref.currentOutstanding - $scope.pageinputs.paymentamount;
 
 
             }

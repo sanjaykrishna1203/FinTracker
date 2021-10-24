@@ -43,13 +43,12 @@
                     <div class="flex flex-col sm:flex-row items-center p-5">
                         <label class="w-full sm:w-20 sm:text-right sm:mr-5">Loan Start Date &nbsp; &nbsp;</label>
                         <input type="date" class=" input w-100 rounded-full border mt-2" required ng-model-options="{timezone:'UTC + 5:30'}" ng-model="pageinputs.loanStartDate" name="loanstartdate" data-single-mode="true">
-                        <span>    <h6 class="text-gray-600 font-medium leading-none mt-3"><strong>&nbsp;&nbsp;This Date</strong> will be considered as <strong>EMI Date</strong></h6></span>
-                    </div>{{pageinputs.loanStartDate}}
-
+                            <h6 class="text-gray-600 font-medium leading-none mt-3"><strong>&nbsp;&nbsp;This Date</strong> will be considered as <strong>EMI Date</strong></h6>
+                    </div>
                     <div class="flex flex-col sm:flex-row items-center p-5">
                         <label class="w-full sm:w-20 sm:text-right sm:mr-5">Loan End Date &nbsp; &nbsp;</label>
                         <input type="date" class=" input w-100 rounded-full border mt-2" required ng-model-options="{timezone:'UTC + 5:30'}" ng-model="pageinputs.loanEndDate" name="loanenddate" data-single-mode="true">
-                    </div>{{pageinputs.loanEndDate}}
+                    </div>
 
                     <div class="flex flex-col sm:flex-row items-center p-5">
                         <label class="w-full sm:w-20 sm:text-right sm:mr-5">Interest(%)</label>
@@ -229,15 +228,15 @@
                 params: { data: JSON.stringify($scope.pageinputs) }
             }).then(function (data, status, headers, config) {
                 data = data.data;
-                if (data = true) {
+                if (!data) {
+                    swal("Error", "Unable to Process Your Request", "error");
+                    $scope.pageinputs = {};
+                }
+                else {
                     swal("Success", "Added Successfully", "success");
                     $scope.pageinputs = {};
                     $scope.GetNarration();
-
-                }
-                else {
-                    swal("Error", "Unable to Process Your Request", "error");
-                    $scope.pageinputs = {};
+                    
                 }
             }, function errorCallback(response) {
 

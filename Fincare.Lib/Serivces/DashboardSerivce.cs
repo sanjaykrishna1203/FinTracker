@@ -198,6 +198,14 @@ namespace FincTracker.Lib.Serivces
                 Debit debit = db.Debits.Where(x => x.Id == pay.DebitRefId && x.UserRefId == pay.UserRefId).FirstOrDefault();
                 debit.CurrentOutstanding = outstanding;
                 db.Payments.Add(pay);
+                Expense exp = new Expense();
+                exp.CreatedAt = DateTime.Now;
+                exp.ModifiedAt = DateTime.Now;
+                exp.ExpenseAmount = pay.PaymentAmount;
+                exp.ExpenseDate = pay.PaymentDate;
+                exp.ExpenseNarration = debit.Narration + " - EMI"; 
+                db.Expenses.Add(exp);
+                exp.UserRefId = pay.UserRefId;
                 await db.SaveChangesAsync();
                 return true;
             }
@@ -241,7 +249,53 @@ namespace FincTracker.Lib.Serivces
                 return false;
             }
         }
+        public List<Expense> GetExpense(int userrefid, DateTime fromdate, DateTime todate)
+        {
+            try
+            {
+                using FinTrackerContext db = new FinTrackerContext();
+                var result = db.Expenses.Where(x => x.ExpenseDate > fromdate && x.ExpenseDate < todate).OrderBy(x=>x.ExpenseDate).ToList();
+                return result;
 
+            }
+            catch(Exception ex)
+            {
+                return null;
+            }
+        }
+        public List<Income> GetIncome(int userrefid, DateTime fromdate, DateTime todate)
+        {
+            try
+            {
+                using FinTrackerContext db = new FinTrackerContext();
+                var result = db.Incomes.Where(x => x.IncomeDate > fromdate && x.IncomeDate < todate).OrderBy(x=>x.IncomeDate).ToList();
+                return result;
+
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public List<Double> GetReportData(int userrefid, DateTime fromdate, DateTime todate)
+        {
+            try
+            {
+                using FinTrackerContext db = new FinTrackerContext();
+                var totalIncome = db.Incomes.Where(x=>x.IncomeDate > fromdate && x.IncomeDate < todate).Select(x => x.Amount).Sum();
+                var totalExpense = db.Expenses.Where(x => x.ExpenseDate > fromdate && x.ExpenseDate < todate).Select(x=>x.ExpenseAmount).Sum();
+                List<Double> result = new List<double>();
+                result.Add(totalIncome);
+                result.Add(totalExpense);
+                return result;
+
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
 
 
     }

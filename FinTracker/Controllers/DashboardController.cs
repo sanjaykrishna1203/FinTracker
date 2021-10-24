@@ -35,7 +35,11 @@ namespace FinTracker.Controllers
         {
             return View();
         }
-        public JsonResult AddExpenseToDb(string data)
+        public IActionResult Report()
+        {
+            return View();
+        }
+        public async Task<bool> AddExpenseToDb(string data)
         {
             try
             {
@@ -44,19 +48,19 @@ namespace FinTracker.Controllers
                     Expense expense = JsonConvert.DeserializeObject<Expense>(data);
                     var userid = Convert.ToInt32(HttpContext.Session.GetString(ApplicationConstants.UserRefId));
                     expense.UserRefId = userid;
-                    var success = _dashboardservice.AddExpense(expense);
-                    return Json(success);
+                    var success = await _dashboardservice.AddExpense(expense);
+                    return success;
 
                 }
                 else
                 {
-                    return Json(false);
+                    return false;
                 }
             }
             catch(Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return Json(false);
+                return false;
             }
         }
         [HttpPost]
@@ -115,7 +119,7 @@ namespace FinTracker.Controllers
             var result = _dashboardservice.GetDebits(userrefid);
             return Json(result);
         }
-        public async Task<JsonResult> AddPaymentToDb(string data,string outstanding)
+        public async Task<bool> AddPaymentToDb(string data,string outstanding)
         {
             if(data!= null)
             {
@@ -124,12 +128,12 @@ namespace FinTracker.Controllers
                 pay.UserRefId = userid;
                 var Outstanding = Convert.ToDouble(outstanding);
                 var success = await _dashboardservice.AddPayment(pay, Outstanding);
-                return  Json(success);
+                return success;
 
             }
             else
             {
-                return Json(false);
+                return false;
             }
         }
         public IActionResult AddIncome()
@@ -146,6 +150,47 @@ namespace FinTracker.Controllers
                 var success = _dashboardservice.AddIncome(income);
                 return Json(success);
 
+            }
+            else
+            {
+                return Json(false);
+            }
+        }
+
+        public JsonResult GetIncome(DateTime fromdate, DateTime todate)
+        {
+            
+            var user = Convert.ToInt32(HttpContext.Session.GetString(ApplicationConstants.UserRefId));
+            var result = _dashboardservice.GetIncome(user, fromdate, todate);
+            if (result != null)
+            {
+                return Json(result);
+            }
+            else
+            {
+                return Json(false);
+            }
+        }
+        public JsonResult GetExpense(DateTime fromdate, DateTime todate)
+        {
+            var user = Convert.ToInt32(HttpContext.Session.GetString(ApplicationConstants.UserRefId));
+            var result = _dashboardservice.GetExpense(user, fromdate, todate);
+            if (result != null)
+            {
+                return Json(result);
+            }
+            else
+            {
+                return Json(false);
+            }
+        }
+        public JsonResult GetReportData(DateTime fromdate, DateTime todate)
+        {
+            var user = Convert.ToInt32(HttpContext.Session.GetString(ApplicationConstants.UserRefId));
+            var result = _dashboardservice.GetReportData(user, fromdate, todate);
+            if (result != null)
+            {
+                return Json(result);
             }
             else
             {

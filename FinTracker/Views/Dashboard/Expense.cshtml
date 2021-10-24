@@ -30,7 +30,6 @@
                     <input ng-model="pageinputs.Expenseamount" type="number" class="input w-full border mt-2" placeholder="₹" required>
                 </div>
                 <button type="submit" class="button bg-theme-1 text-white mt-5" ng-click="FormValidator()">Add</button>
-                {{expenseform.$valid}}
             </form>
 
         </div>
@@ -67,14 +66,16 @@
                 async: false,
             }).then(function (data, status, headers, config) {
                 data = data.data;
-                if (data = false) {
+                if (!data) {
                     swal("Error", "Unable to Process Your Request", "error");
                     $scope.pageinputs = {};
+                    $scope.pageinputs.expensedate = new Date();
                 }
                 else {
 
                     swal("Success", "Added Successfully", "success");
                     $scope.pageinputs = {};
+                    $scope.pageinputs.expensedate = new Date();
                 }
             }, function errorCallback(response) {
 
