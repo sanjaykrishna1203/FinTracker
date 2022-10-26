@@ -69,6 +69,23 @@ namespace FincTracker.Lib.Serivces
             }
            
         }
+
+        public Debit GetDebt(int id)
+        {
+            try
+            {
+                using FinTrackerContext db = new FinTrackerContext();
+                var result = db.Debits.Where(x => x.Id == id).FirstOrDefault();
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+
+        }
+
         public async Task<bool> DeleteNarration(int user, int id)
         {
             try
@@ -187,6 +204,49 @@ namespace FincTracker.Lib.Serivces
                 return null;
             }
            
+        }
+
+        public List<Payment> GetPayments(int debitRefId)
+        {
+            try
+            {
+                using FinTrackerContext db = new FinTrackerContext();
+                var result = db.Payments.Where(x => x.DebitRefId == debitRefId).OrderBy(x => x.PaymentDate).ToList();
+                return result;
+
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public List<Debit> GetAllDebits(int userrefid)
+        {
+            try
+            {
+                using FinTrackerContext db = new FinTrackerContext();
+                var result = db.Debits.Where(x => x.UserRefId == userrefid && !x.IsDeleted).ToList();
+                for (var i = 0; i < result.Count; i++)
+                {
+                    result[i].LoanStartDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, result[i].LoanStartDate.Day);
+                }
+
+                if (result != null)
+                {
+                    return (result);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+
         }
         public async Task<bool> AddPayment(Payment pay,double outstanding)
         {

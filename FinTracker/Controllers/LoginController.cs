@@ -86,7 +86,7 @@ namespace FinTracker.Controllers
                 return Json(false);
             }
         }
-        public async Task<IActionResult> LogoutAsync()
+        public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             HttpContext.Session.Clear();

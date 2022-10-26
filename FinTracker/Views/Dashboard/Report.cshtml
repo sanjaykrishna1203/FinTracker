@@ -4,7 +4,7 @@
 }
 
 <br />
-<div ng-app="ReportApp" ng-controller="ReportCtrl">
+<div ng-app="ReportApp" ng-controller="ReportCtrl" ng-init="GetDebits()">
 
     <div class="flex flex-col sm:flex-row items-center">
         <div class="mt-2">
@@ -16,19 +16,36 @@
         <div class="mt-2">
             <label id="label" for="todate">To Date</label>
         </div>
+        
         <div class="mt-2">
             <input type="date" name="todate" ng-model-options="{timezone:'UTC + 5:30'}" ng-model="todate" class=" input w-full border mt-2" data-single-mode="true" required>
         </div>
-        <div class="mt-2">
+          <div class="mt-2">
             <button id="getreport" class="button mr-1 mb-2 bg-theme-1 text-white" ng-click="GetIncomeReport();GetExpenseReport();GetData()">Get Reports</button>
+        </div>
+         <div class="mt-2 p-2">
+             Or
+        </div>
+         <div class="mt-2">
+            <label id="label" for="fromdate">By Debts</label>
+        </div>
+         <div class="mt-2">
+
+           <select class="input w-full border mt-2" ng-change="setValues();setOutstanding();" name="debitref" ng-model="debitref" ng-options="x.id as x.narration for x in DebitsList" required>
+                                <option class="block p-2 transition duration-300 ease-in-out bg-white dark:bg-dark-1 hover:bg-gray-200 dark:hover:bg-dark-2 rounded-md"></option>
+                            </select>
+        </div>
+        {{debitref}}
+        <div class="mt-2">
+            <button id="getreport" class="button mr-1 mb-2 bg-theme-1 text-white" ng-click="GetPaymentData();GeDebtData();">Get Reports</button>
         </div>
        
     </div>
     
 
 
-    <div class="grid grid-cols-12 gap-6 mt-5">
-        <div class="intro-y col-span-12 lg:col-span-6">
+    <div class="grid grid-cols-12 gap-6 mt-5" ng-if="!debtReportReady" >
+        <div class="intro-y col-span-12 lg:col-span-6" >
             <!-- BEGIN: Income Table -->
             <div class="intro-y box">
                 <div class="flex flex-col sm:flex-row items-center p-5 border-b border-gray-200">
@@ -119,6 +136,76 @@
 
         </div>
     </div>
+    <div class=" mt-5">
+         <div class="intro-y box" ng-if="debtReportReady">
+                <div class="flex flex-col sm:flex-row items-center p-5 border-b border-gray-200">
+                    <h2 class="font-medium text-base mr-auto">
+                        Debt Report
+                    </h2>
+                    <div class="w-full sm:w-auto flex items-center sm:ml-auto mt-3 sm:mt-0">
+                        <div class="mr-3"> {{debtData.narration}}</div>
+                    </div>
+                </div>
+                <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <td class="border-b dark:border-dark-5 font-medium">EMI</td>
+                                        <td  class="border-b dark:border-dark-5">{{debtData.emi}}</td>
+                                    </tr>
+                                     <tr>
+                                        <td  class="border-b dark:border-dark-5 font-medium">Interest</td>
+                                        <td  class="border-b dark:border-dark-5">{{debtData.interest}}</td>
+                                    </tr>
+                                     <tr>
+                                        <td  class="border-b dark:border-dark-5 font-medium">Total Outstanding</td>
+                                        <td  class="border-b dark:border-dark-5">{{debtData.currentOutstanding}}</td>
+                                    </tr>
+                                     <tr>
+                                        <td  class="border-b dark:border-dark-5 font-medium">Total Amount</td>
+                                        <td  class="border-b dark:border-dark-5">{{debtData.totalAmount}}</td>
+                                    </tr>
+                                     <tr>
+                                        <td  class="border-b dark:border-dark-5 font-medium">Loan Start Date</td>
+                                        <td  class="border-b dark:border-dark-5">{{debtData.loanStartDate | date}}</td>
+                                    </tr>
+                                     <tr>
+                                        <td  class="border-b dark:border-dark-5 font-medium">Loan End Date</td>
+                                        <td  class="border-b dark:border-dark-5">{{debtData.loanEndDate | date}}</td>
+                                    </tr>
+                                    
+                                </tbody></table>
+                <div class="p-5" id="head-options-table">
+                    <div class="preview">
+                        <div class="overflow-x-auto">
+                            <h2 class="font-medium text-base p-2">Payment History</h2>
+                            <table class="table">
+                                <thead>
+                                    <tr class="bg-gray-700 dark:bg-dark-1 text-white">
+                                        <th class="whitespace-no-wrap">Date</th>
+                                        <th class="whitespace-no-wrap">Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="items in paymentList">
+                                        <td ng-bind="items.paymentDate | date" class="border-b dark:border-dark-5"></td>
+                                        <td ng-bind="items.paymentAmount" class="border-b dark:border-dark-5"></td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                    <div class="source-code hidden">
+                        <button data-target="#copy-head-options-table" class="copy-code button button--sm border flex items-center text-gray-700 dark:border-dark-5 dark:text-gray-300"> <i data-feather="file" class="w-4 h-4 mr-2"></i> Copy example code </button>
+                        <div class="overflow-y-auto h-64 mt-3">
+                            <pre class="source-preview" id="copy-head-options-table"> <code class="text-xs p-0 rounded-md html pl-5 pt-8 pb-4 -mb-10 -mt-10"> HTMLOpenTagdiv class=&quot;overflow-x-auto&quot;HTMLCloseTag HTMLOpenTagtable class=&quot;table&quot;HTMLCloseTag HTMLOpenTagtheadHTMLCloseTag HTMLOpenTagtr class=&quot;bg-gray-700 dark:bg-dark-1 text-white&quot;HTMLCloseTag HTMLOpenTagth class=&quot;whitespace-no-wrap&quot;HTMLCloseTag#HTMLOpenTag/thHTMLCloseTag HTMLOpenTagth class=&quot;whitespace-no-wrap&quot;HTMLCloseTagFirst NameHTMLOpenTag/thHTMLCloseTag HTMLOpenTagth class=&quot;whitespace-no-wrap&quot;HTMLCloseTagLast NameHTMLOpenTag/thHTMLCloseTag HTMLOpenTagth class=&quot;whitespace-no-wrap&quot;HTMLCloseTagUsernameHTMLOpenTag/thHTMLCloseTag HTMLOpenTag/trHTMLCloseTag HTMLOpenTag/theadHTMLCloseTag HTMLOpenTagtbodyHTMLCloseTag HTMLOpenTagtrHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTag1HTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTagAngelinaHTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTagJolieHTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTag@angelinajolieHTMLOpenTag/tdHTMLCloseTag HTMLOpenTag/trHTMLCloseTag HTMLOpenTagtrHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTag2HTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTagBradHTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTagPittHTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTag@bradpittHTMLOpenTag/tdHTMLCloseTag HTMLOpenTag/trHTMLCloseTag HTMLOpenTagtrHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTag3HTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTagCharlieHTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTagHunnamHTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTag@charliehunnamHTMLOpenTag/tdHTMLCloseTag HTMLOpenTag/trHTMLCloseTag HTMLOpenTag/tbodyHTMLCloseTag HTMLOpenTag/tableHTMLCloseTag HTMLOpenTagtable class=&quot;table mt-5&quot;HTMLCloseTag HTMLOpenTagtheadHTMLCloseTag HTMLOpenTagtr class=&quot;bg-gray-200 text-gray-700&quot;HTMLCloseTag HTMLOpenTagth class=&quot;whitespace-no-wrap&quot;HTMLCloseTag#HTMLOpenTag/thHTMLCloseTag HTMLOpenTagth class=&quot;whitespace-no-wrap&quot;HTMLCloseTagFirst NameHTMLOpenTag/thHTMLCloseTag HTMLOpenTagth class=&quot;whitespace-no-wrap&quot;HTMLCloseTagLast NameHTMLOpenTag/thHTMLCloseTag HTMLOpenTagth class=&quot;whitespace-no-wrap&quot;HTMLCloseTagUsernameHTMLOpenTag/thHTMLCloseTag HTMLOpenTag/trHTMLCloseTag HTMLOpenTag/theadHTMLCloseTag HTMLOpenTagtbodyHTMLCloseTag HTMLOpenTagtrHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTag1HTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTagAngelinaHTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTagJolieHTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTag@angelinajolieHTMLOpenTag/tdHTMLCloseTag HTMLOpenTag/trHTMLCloseTag HTMLOpenTagtrHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTag2HTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTagBradHTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTagPittHTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTag@bradpittHTMLOpenTag/tdHTMLCloseTag HTMLOpenTag/trHTMLCloseTag HTMLOpenTagtrHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTag3HTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTagCharlieHTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTagHunnamHTMLOpenTag/tdHTMLCloseTag HTMLOpenTagtd class=&quot;border-b dark:border-dark-5&quot;HTMLCloseTag@charliehunnamHTMLOpenTag/tdHTMLCloseTag HTMLOpenTag/trHTMLCloseTag HTMLOpenTag/tbodyHTMLCloseTag HTMLOpenTag/tableHTMLCloseTag HTMLOpenTag/divHTMLCloseTag </code> </pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+
 </div>
 
 <style>
@@ -144,6 +231,10 @@
             $scope.IncomeList = {};
             $scope.ExpenseList = {};
             $scope.DashData = [];
+            $scope.debtData = [];
+            $scope.paymentList = {};
+            $scope.debtReportReady = false;
+            $scope.incomeReportReady = false;
       
 
             $scope.GetIncomeReport = function () {
@@ -162,6 +253,39 @@
                 });
             }
 
+             $scope.DebitsList = [];
+            $scope.GetDebits = function () {
+            $http({
+                cache: false,
+                url: "/Dashboard/GetAllDebits",
+                method: "POST",
+
+
+            }).then(function (data, status, headers, config) {
+                data = data.data;
+                $scope.DebitsList = [];
+                $scope.DebitsList = data;
+            }, function errorCallback(response) {
+
+            });
+        }
+
+            $scope.GetPaymentData = function () {
+                $http({
+                    cache: false,
+                    url: "/Dashboard/GetPayments",
+                    method: "POST",
+                    params: { debitRefId: $scope.debitref }
+
+                }).then(function (data, status, headers, config) {
+                    data = data.data;
+                    $scope.paymentList = [];
+                    $scope.paymentList = data;
+                    console.log(data);
+                }, function errorCallback(response) {
+
+                });
+            }
             $scope.GetExpenseReport = function () {
                 $http({
                     cache: false,
@@ -173,6 +297,7 @@
                     data = data.data;
                     $scope.ExpenseList = [];
                     $scope.ExpenseList = data;
+                    $scope.debtReportReady = false;
                 }, function errorCallback(response) {
 
                 });
@@ -191,6 +316,25 @@
                     $scope.DashData = data;
                     $scope.totalincome = $scope.DashData[0];
                     $scope.totalexpense = $scope.DashData[1];
+                     
+                }, function errorCallback(response) {
+
+                });
+            }
+             $scope.GeDebtData = function () {
+                 console.log( $scope.debitref);
+                $http({
+                    cache: false,
+                    url: "/Dashboard/GetDebt",
+                    method: "POST",
+                    params: { debtId: $scope.debitref }, async: false,
+
+                }).then(function(data, status, headers, config) {
+                    data = data.data;
+                    $scope.debtData = [];
+                    console.log(data);
+                    $scope.debtData = data;
+                     $scope.debtReportReady = true;
                 }, function errorCallback(response) {
 
                 });

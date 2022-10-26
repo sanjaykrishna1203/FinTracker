@@ -119,14 +119,20 @@ namespace FinTracker.Controllers
             var result = _dashboardservice.GetDebits(userrefid);
             return Json(result);
         }
-        public async Task<bool> AddPaymentToDb(string data,string outstanding)
+        public JsonResult GetAllDebits()
+        {
+            var userrefid = Convert.ToInt32(HttpContext.Session.GetString(ApplicationConstants.UserRefId));
+            var result = _dashboardservice.GetAllDebits(userrefid);
+            return Json(result);
+        }
+        public async Task<bool> AddPaymentToDb(string data,string currentOutstanding)
         {
             if(data!= null)
             {
                 Payment pay = JsonConvert.DeserializeObject<Payment>(data);
                 var userid = Convert.ToInt32(HttpContext.Session.GetString(ApplicationConstants.UserRefId));
                 pay.UserRefId = userid;
-                var Outstanding = Convert.ToDouble(outstanding);
+                var Outstanding = Convert.ToDouble(currentOutstanding);
                 var success = await _dashboardservice.AddPayment(pay, Outstanding);
                 return success;
 
@@ -156,7 +162,6 @@ namespace FinTracker.Controllers
                 return Json(false);
             }
         }
-
         public JsonResult GetIncome(DateTime fromdate, DateTime todate)
         {
             
@@ -175,6 +180,31 @@ namespace FinTracker.Controllers
         {
             var user = Convert.ToInt32(HttpContext.Session.GetString(ApplicationConstants.UserRefId));
             var result = _dashboardservice.GetExpense(user, fromdate, todate);
+            if (result != null)
+            {
+                return Json(result);
+            }
+            else
+            {
+                return Json(false);
+            }
+        }
+        public JsonResult GetPayments(int debitRefId)
+        {
+            var result = _dashboardservice.GetPayments(debitRefId);
+            if (result != null)
+            {
+                return Json(result);
+            }
+            else
+            {
+                return Json(false);
+            }
+        }
+
+        public JsonResult GetDebt(int debtId)
+        {
+            var result = _dashboardservice.GetDebt(debtId);
             if (result != null)
             {
                 return Json(result);

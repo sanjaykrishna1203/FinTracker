@@ -8,6 +8,7 @@
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.Abstractions" Version="5.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.10" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="PreEmptive.Protection.Checks.Attributes" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,0 +1,15 @@
+E:\source\repos\FinTracker\Fincare.Lib\bin\Release\net5.0\FincTracker.Lib.deps.json
+E:\source\repos\FinTracker\Fincare.Lib\bin\Release\net5.0\FincTracker.Lib.dll
+E:\source\repos\FinTracker\Fincare.Lib\bin\Release\net5.0\FincTracker.Lib.pdb
+E:\source\repos\FinTracker\Fincare.Lib\bin\Release\net5.0\FinTracker.Dal.dll
+E:\source\repos\FinTracker\Fincare.Lib\bin\Release\net5.0\FinTracker.Dal.pdb
+E:\source\repos\FinTracker\Fincare.Lib\obj\Release\net5.0\FincTracker.Lib.csproj.AssemblyReference.cache
+E:\source\repos\FinTracker\Fincare.Lib\obj\Release\net5.0\FincTracker.Lib.GeneratedMSBuildEditorConfig.editorconfig
+E:\source\repos\FinTracker\Fincare.Lib\obj\Release\net5.0\FincTracker.Lib.AssemblyInfoInputs.cache
+E:\source\repos\FinTracker\Fincare.Lib\obj\Release\net5.0\FincTracker.Lib.AssemblyInfo.cs
+E:\source\repos\FinTracker\Fincare.Lib\obj\Release\net5.0\FincTracker.Lib.csproj.CoreCompileInputs.cache
+E:\source\repos\FinTracker\Fincare.Lib\obj\Release\net5.0\FincTracker.Lib.csproj.CopyComplete
+E:\source\repos\FinTracker\Fincare.Lib\obj\Release\net5.0\FincTracker.Lib.dll
+E:\source\repos\FinTracker\Fincare.Lib\obj\Release\net5.0\FincTracker.Lib.pdb
+E:\source\repos\FinTracker\Fincare.Lib\bin\Release\net5.0\ref\FincTracker.Lib.dll
+E:\source\repos\FinTracker\Fincare.Lib\obj\Release\net5.0\ref\FincTracker.Lib.dll

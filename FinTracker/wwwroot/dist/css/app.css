@@ -6490,8 +6490,8 @@ body.tabulator-print-fullscreen-hide > *:not(.tabulator-print-fullscreen) {
 .app {
   background-repeat: no-repeat;
   background-attachment: fixed;
-  padding-top: 1.25rem;
-  padding-bottom: 1.25rem;
+ /* padding-top: 1.25rem;
+  padding-bottom: 1.25rem;*/
 }
 
 .login {
@@ -7177,10 +7177,10 @@ html.dark body *, html.dark body ::before, html.dark body ::after {
 html body {
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
-  padding-top: 0.75rem;
-  padding-bottom: 0.75rem;
+  /*padding-top: 0.75rem;
+  padding-bottom: 0.75rem;*/
   padding-left: 2rem;
-  padding-right: 2rem;
+  /*padding-right: 2rem;*/
   font-family: Roboto;
   font-size: 0.875rem;
   --text-opacity: 1;
@@ -7196,7 +7196,7 @@ html body {
 }
 
 .content {
-  border-radius: 30px;
+  /*border-radius: 30px;*/
   padding: 0px 22px;
   min-width: 0;
   min-height: 100vh;
@@ -8346,7 +8346,7 @@ html body {
   margin-left: 0;
 }
 
-@-webkit-keyframes intro-top-menu-animation {
+/*@-webkit-keyframes intro-top-menu-animation {
   100% {
     opacity: 1;
     transform: translateY(0px);
@@ -8370,7 +8370,7 @@ html body {
   100% {
     z-index: 10;
   }
-}
+}*/
 
 .dark .top-nav > ul li:hover .top-menu:not(.top-menu--active) .top-menu__icon:before {
   --bg-opacity: 1;
@@ -10505,7 +10505,7 @@ html body {
 
 .side-nav > ul > li > .side-menu.side-menu--active:before {
   content: "";
-  width: 30px;
+  /*width: 30px;*/
   height: 30px;
   margin-top: -30px;
   transform: rotate(90deg) scale(1.04);
@@ -10519,7 +10519,7 @@ html body {
 
 .side-nav > ul > li > .side-menu.side-menu--active:after {
   content: "";
-  width: 30px;
+  /*width: 30px;*/
   height: 30px;
   margin-top: 50px;
   transform: scale(1.04);
